@@ -2,47 +2,35 @@ package UserAccountServer;
 
 import GameServer.Constants;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Represents a server managing user accounts and handling client interactions.
  */
-public class UserAccountServer {
+public class UserAccountServer extends UnicastRemoteObject implements UserAccountService {
 
-    private static final Integer THREAD_COUNT = 20;
     private static List<String> userAccounts;
     private static Set<String> loggedInUsers;
 
-    /**
-     * Static initializer block to load user accounts from file.
-     */
-    static {
+    public UserAccountServer() throws RemoteException {
+        super();
         loadUserAccounts();
         loggedInUsers = new HashSet<>();
     }
 
-    /**
-     * Main entry point for running the UserAccountServer.
-     * Starts the server on the specified port and accepts incoming connections.
-     */
     public static void main(String[] args) {
+        try {
+            LocateRegistry.createRegistry(Constants.UAS_PORT);
 
-        int port = Constants.UAS_PORT;
+            UserAccountService userAccountService = new UserAccountServer();
+            Naming.rebind("UserAccountService", userAccountService);
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("UserAccountServer is running...");
-            ExecutorService threadPool = Executors.newFixedThreadPool(THREAD_COUNT);
-            while (true) {
-                Socket socket = serverSocket.accept();
-                // System.out.println("Connection established with game server.");
-                threadPool.submit(() -> handleConnection(socket));
-            }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -55,7 +43,6 @@ public class UserAccountServer {
      */
     private static void loadUserAccounts() {
         userAccounts = new ArrayList<>();
-        // loggedInUsers = new HashSet<>();
 
         File directory = new File(Constants.USER_DATA_DIRECTORY);
         File[] files = directory.listFiles();
@@ -70,20 +57,17 @@ public class UserAccountServer {
 
     /**
      * Checks if a user is already registered
-     * 
+     *
      * @param username - The username to check for registration
      * @return - 1 if the user is registered and not currently logged in,
      *         - 2 if the user is not registered and not logged in.
      *         - 0 if the user is not logged in and not registered.
      */
-    private static synchronized int login(String username) {
-        loadUserAccounts();
-        if (userAccounts.contains(username.trim()) &&
-                !loggedInUsers.contains(username.trim())) {
+    public int login(String username) throws RemoteException {
+        if (userAccounts.contains((username.trim())) && !loggedInUsers.contains(username.trim())) {
             loggedInUsers.add(username);
             return 1;
-        } else if (!userAccounts.contains(username.trim()) &&
-                !loggedInUsers.contains(username.trim())) {
+        } else if (!userAccounts.contains(username.trim()) && !loggedInUsers.contains(username.trim())) {
             loggedInUsers.add(username);
             return 2;
         } else {
@@ -98,7 +82,7 @@ public class UserAccountServer {
      * @return - 1 if the user was logged out successfully.
      *         - 0 if the user was not logged in.
      */
-    private static synchronized int logout(String username) {
+    public int logout(String username) throws RemoteException {
         if (loggedInUsers.contains(username.trim())) {
             loggedInUsers.remove(username.trim());
             return 1;
@@ -118,7 +102,7 @@ public class UserAccountServer {
      * @throws IOException - If an I/O error occurs while creating the file or
      *                     reading from it.
      */
-    private static synchronized String load(String username) throws IOException {
+    public String load(String username) throws RemoteException {
         String filePath = Constants.USER_DATA_DIRECTORY + username + ".txt";
         File userDatafile = new File(filePath);
         try {
@@ -130,7 +114,7 @@ public class UserAccountServer {
                 return userDataString;
             }
         } catch (IOException e) {
-            throw new IOException(Constants.CANT_CREATE_USER_FILE);
+            throw new RemoteException(Constants.CANT_CREATE_USER_FILE);
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(userDatafile))) {
@@ -140,6 +124,8 @@ public class UserAccountServer {
                 userDataBuilder.append(line).append("\n");
             }
             return userDataBuilder.toString();
+        } catch (IOException e) {
+            throw new RemoteException("Failed to read user file.", e);
         }
     }
 
@@ -151,7 +137,7 @@ public class UserAccountServer {
      * @return - 1 if the user data was saved successfully.
      *         - 0 if an error occurred while saving.
      */
-    private static synchronized int save(String username, String data) {
+    public int save(String username, String data) throws RemoteException {
         File userDataFile = new File(Constants.USER_DATA_DIRECTORY +
                 username + ".txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataFile))) {
@@ -160,61 +146,6 @@ public class UserAccountServer {
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
-        }
-    }
-
-    /**
-     * Handles a connection with a client socket by performing requested operations
-     * such as login,
-     * logout, load, or save.
-     * 
-     * @param socket - The socket representing the connection with the client.
-     */
-    private static void handleConnection(Socket socket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
-
-            int result = -1;
-            String stringResult = "";
-
-            String input = in.readLine();
-            String[] parts = input.split(";");
-            if (parts.length == 2) {
-                String operation = parts[0].trim();
-                String username = parts[1].trim();
-
-                switch (operation) {
-                    case "login" -> result = login(username);
-                    case "logout" -> result = logout(username);
-                    case "load" -> stringResult = load(username);
-                    case "save" -> {
-                        StringBuilder dataBuilder = new StringBuilder();
-                        String line;
-                        while ((line = in.readLine()) != null && !line.isEmpty()) {
-                            dataBuilder.append(line).append("\n");
-                        }
-                        result = save(username, dataBuilder.toString());
-                    }
-                }
-
-                if (result != -1) {
-                    out.write(String.valueOf(result));
-                } else {
-                    out.write(stringResult);
-                }
-                out.newLine();
-                out.flush();
-            }
-        } catch (SocketException e) {
-            System.out.println("Connection closed");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
