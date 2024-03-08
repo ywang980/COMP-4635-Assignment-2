@@ -61,7 +61,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @param username - The username to check for registration
      * @return - 1 if the user is registered and not currently logged in,
      *         - 2 if the user is not registered and not logged in.
-     *         - 0 if the user is not logged in and not registered.
+     *         - 0 if the user is logged in.
      */
     public int login(String username) throws RemoteException {
         if (userAccounts.contains((username.trim())) && !loggedInUsers.contains(username.trim())) {
@@ -69,6 +69,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
             return 1;
         } else if (!userAccounts.contains(username.trim()) && !loggedInUsers.contains(username.trim())) {
             loggedInUsers.add(username);
+            userAccounts.add(username);
             return 2;
         } else {
             return 0;
