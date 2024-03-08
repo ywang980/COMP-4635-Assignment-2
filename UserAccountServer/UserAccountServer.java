@@ -2,9 +2,9 @@ package UserAccountServer;
 
 import GameServer.Constants;
 import java.io.*;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -16,18 +16,12 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
     private static List<String> userAccounts;
     private static Set<String> loggedInUsers;
 
-    public UserAccountServer() throws RemoteException {
-        super();
-        loadUserAccounts();
-        loggedInUsers = new HashSet<>();
-    }
-
     public static void main(String[] args) {
         try {
-            LocateRegistry.createRegistry(Constants.UAS_PORT);
+            Registry registry = LocateRegistry.getRegistry("hostname", 1099);
 
             UserAccountService userAccountService = new UserAccountServer();
-            Naming.rebind("UserAccountService", userAccountService);
+            registry.rebind("UserAccountService", userAccountService);
 
             System.out.println("UserAccountServer is running...");
         } catch (Exception e) {
@@ -35,6 +29,11 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
         }
     }
 
+    public UserAccountServer() throws RemoteException {
+        super();
+        loadUserAccounts();
+        loggedInUsers = new HashSet<>();
+    }
     /**
      * Loads user accounts from the file into the userAccounts list and populates
      * the loggedInUsers set.
