@@ -20,11 +20,29 @@ import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
 import UserAccountServer.GameState;
 
+/**
+ * The ServerInterfaceImpl class implements the ServerInterface.
+ */
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
+
+    /**
+     * Constructs a ServerInterfaceImpl object.
+     *
+     * @throws RemoteException - if there is an issue with remote communication.
+     */
     public ServerInterfaceImpl() throws RemoteException {
         super();
     }
 
+    /**
+     * Checks if a user is valid by attempting to log them in via the UserAccountService.
+     *
+     * @param username - The username to check for validity.
+     * @return - 1 if the user is registered and not currently logged in,
+     *         - 2 if the user is not registered and not logged in, and is now registered and logged in,
+     *         - 0 if the user is already logged in.
+     * @throws RemoteException - if there is an issue with remote communication.
+     */
     public int checkValidUser(String username) throws RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -40,6 +58,13 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Validates user data associated with the specified username.
+     *
+     * @param username - The username for which to validate user data.
+     * @return - The UserData associated with the specified username.
+     * @throws RemoteException - if there is an issue with remote communication.
+     */
     public UserData validateUserData(String username) throws RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -52,6 +77,12 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Saves game data associated with the specified UserData.
+     *
+     * @param userData - The UserData containing the game data to save.
+     * @throws RemoteException - if there is an issue with remote communication or saving the game data.
+     */
     public void saveGame(UserData userData) throws RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -66,6 +97,12 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Logs out the specified user.
+     *
+     * @param username - The username of the user to log out.
+     * @throws RemoteException - if there is an issue with remote communication or logging out the user.
+     */
     public void logoutUser(String username) throws RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -80,6 +117,14 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Processes user input and performs actions based on the input.
+     *
+     * @param userData - The UserData object representing the user's data.
+     * @param input - The user input to process.
+     * @return - The updated UserData object after processing the input.
+     * @throws RemoteException - if there is an issue with remote communication or processing the input.
+     */
     public UserData processUserInput(UserData userData, String input) throws RemoteException {
         String[] tokenizedInput = input.split(";");
         if (tokenizedInput.length <= 1)
@@ -134,6 +179,14 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         return userData;
     }
 
+    /**
+     * Contacts the database server to perform a specified command with the given payload.
+     *
+     * @param command - The command to be performed.
+     * @param payload - The payload associated with the command.
+     * @return - The response received from the database server.
+     * @throws RemoteException - if there is an issue with remote communication or contacting the database.
+     */
     private static String contactDatabase(char command, String payload) throws RemoteException {
         int wordServerPort = 8002;
 
@@ -164,7 +217,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
-    /*
+    /**
      * Create a new game, then save/update the user data.
      */
     private static void createNewGame(UserData userData, int wordCount) throws RemoteException {
@@ -178,7 +231,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         new ServerInterfaceImpl().saveGame(userData);
     }
 
-    /*
+    /**
      * Generate a new game by requesting a stem word and a list of (valid)
      * leaf words from the word database microservice.
      * 
@@ -220,10 +273,24 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Fetches the stem associated with the specified integer from the database.
+     *
+     * @param a - The integer value for which to fetch the stem.
+     * @return - The stem fetched from the database.
+     * @throws RemoteException - if there is an issue with remote communication or fetching the stem.
+     */
     private static String fetchStem(int a) throws RemoteException {
         return contactDatabase('E', String.valueOf(a));
     }
 
+    /**
+     * Generates random leaf indices based on the given word count and stem.
+     *
+     * @param wordCount - The number of words in the puzzle.
+     * @param stem - The stem string used for generating leaf indices.
+     * @return - An ArrayList containing randomly generated leaf indices.
+     */
     private static ArrayList<Integer> generateLeafIndices(int wordCount, String stem) {
         Set<Integer> leafIndices = new HashSet<>();
         while (leafIndices.size() < wordCount - 1) {
@@ -232,7 +299,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         return new ArrayList<>(leafIndices);
     }
 
-    /*
+    /**
      * Insert leaves of a crossword puzzle.
      * 
      * Details: insufficient matching leaves is determined when either of the
@@ -268,11 +335,26 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         return true;
     }
 
+    /**
+     * Fetches the leaf associated with the specified matching character from the database.
+     *
+     * @param matchingCharacter - The character to match against in the leaf.
+     * @return - The leaf fetched from the database.
+     * @throws RemoteException - if there is an issue with remote communication or fetching the leaf.
+     */
     private static String fetchLeaf(char matchingCharacter) throws RemoteException {
         String charToString = String.valueOf(matchingCharacter);
         return contactDatabase('D', charToString);
     }
 
+    /**
+     * Processes a word query to check if the word is in the database or the puzzle word list.
+     *
+     * @param userData - The UserData object representing the user's data.
+     * @param input - The word query input to process.
+     * @return - A message indicating whether the word is found in the database or the puzzle word list.
+     * @throws RemoteException - if there is an issue with remote communication or processing the query.
+     */
     public String processWordQuery(UserData userData, String input) throws RemoteException {
         boolean found = false;
 
@@ -284,7 +366,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             return "\nThe word: " + input + " is in the database.";
 
         // Check if input in word list used to construct puzzle, in case of
-        // of unfortunate delete timing (i.e., user created a game with a specific
+        // unfortunate delete timing (i.e., user created a game with a specific
         // word, but then another user deleted said word after)
 
         String[] words = userData.getGameState().getWords();
@@ -297,6 +379,14 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         return "\nThe word: " + input + " is not in the database.";
     }
 
+    /**
+     * Processes a user's guess for the puzzle.
+     *
+     * @param userData - The UserData object representing the user's data.
+     * @param input - The user's guess input to process.
+     * @return - An ActiveGameData object containing updated user data and game status.
+     * @throws RemoteException - if there is an issue with remote communication or processing the guess.
+     */
     public ActiveGameData processPuzzleGuess(UserData userData, String input) throws RemoteException {
         String message = "";
         GameState gameState = userData.getGameState();

@@ -11,8 +11,16 @@ import GameServer.ServerInterface;
 import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
 
+/**
+ * The Client.
+ */
 public class Client {
 
+    /**
+     * Main method to start the client.
+     *
+     * @param args - Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.DEFAULT_RMI_PORT);
@@ -39,6 +47,12 @@ public class Client {
         }
     }
 
+    /**
+     * Validates the username entered by the user.
+     *
+     * @param server - The ServerInterface object for server communication.
+     * @return - The validated username.
+     */
     private static String validateUserName(ServerInterface server) {
         Scanner scanner = new Scanner(System.in);
         String username = "";
@@ -63,6 +77,12 @@ public class Client {
         return username;
     }
 
+    /**
+     * Serves the user by providing a menu and processing user input.
+     *
+     * @param server - The ServerInterface object for server communication.
+     * @param userData - The UserData object representing the user's data.
+     */
     private static void serveUser(ServerInterface server, UserData userData) {
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -90,6 +110,13 @@ public class Client {
         } while (true);
     }
 
+    /**
+     * Plays the game by processing user input and updating the game state.
+     *
+     * @param server - The ServerInterface object for server communication.
+     * @param userData - The UserData object representing the user's data.
+     * @return - The UserData object after playing the game.
+     */
     private static UserData playGame(ServerInterface server, UserData userData) {
         Scanner scanner = new Scanner(System.in);
         ActiveGameData activeGameData = new ActiveGameData(userData, true, "");
@@ -135,6 +162,13 @@ public class Client {
         return userData;
     }
 
+    /**
+     * Handles errors that occur during client-server communication.
+     *
+     * @param server - The ServerInterface object for server communication.
+     * @param userData - The UserData object representing the user's data.
+     * @param e - The Exception that occurred.
+     */
     private static void handleError(ServerInterface server, UserData userData, Exception e) {
         System.out.println("\nError: " + (e.getMessage()));
         try {

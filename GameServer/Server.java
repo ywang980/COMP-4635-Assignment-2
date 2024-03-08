@@ -3,7 +3,16 @@ package GameServer;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 
+/**
+ * The Server class contains the main method to start the server.
+ */
 public class Server {
+
+    /**
+     * Main method to start the server.
+     *
+     * @param args - Command-line arguments (not used).
+     */
     public static void main(String args[]) {
         try {
             ServerInterfaceImpl serverObject = new ServerInterfaceImpl();

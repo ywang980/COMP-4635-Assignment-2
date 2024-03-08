@@ -16,7 +16,7 @@ public class Puzzle implements Serializable{
     private int rows;
     private int columns;
 
-    /*
+    /**
      * Each puzzle has 2 2-D char "grids"
      * 1 to represent the current puzzle state displayed to the player
      * 1 to represent the solved puzzle

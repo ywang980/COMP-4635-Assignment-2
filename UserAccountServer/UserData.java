@@ -28,12 +28,6 @@ public class UserData implements Serializable {
         int gameStateIndex = data.indexOf("\n", data.indexOf("\n", scoreEndIndex));
 
         this.gameState = new GameState(data.substring(gameStateIndex));
-
-        // if (data.contains("State;Play")) {
-        // this.gameState = new GameState(data.substring(gameStateIndex));
-        // } else {
-        // this.gameState = new GameState();
-        // }
     }
 
     /**

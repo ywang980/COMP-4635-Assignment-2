@@ -17,6 +17,13 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
     private static List<String> userAccounts;
     private static Set<String> loggedInUsers;
 
+    /**
+     * The main method is the entry point of the UserAccountServer application.
+     * It initializes the RMI Registry, creates an instance of UserAccountService,
+     * and binds it to the Registry.
+     *
+     * @param args - The command-line arguments (not used).
+     */
     public static void main(String[] args) {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -30,11 +37,19 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
         }
     }
 
+    /**
+     * Constructs a UserAccountServer instance.
+     * This constructor initializes the server by loading existing user accounts
+     * and creating an empty set for logged-in users.
+     *
+     * @throws RemoteException - if there is an issue with remote communication.
+     */
     public UserAccountServer() throws RemoteException {
         super();
         loadUserAccounts();
         loggedInUsers = new HashSet<>();
     }
+
     /**
      * Loads user accounts from the file into the userAccounts list and populates
      * the loggedInUsers set.
@@ -62,6 +77,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @return - 1 if the user is registered and not currently logged in,
      *         - 2 if the user is not registered and not logged in.
      *         - 0 if the user is logged in.
+     * @throws RemoteException - if there is an issue with remote communication.
      */
     public int login(String username) throws RemoteException {
         if (userAccounts.contains((username.trim())) && !loggedInUsers.contains(username.trim())) {
@@ -82,6 +98,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @param username - The username of the account to log out.
      * @return - 1 if the user was logged out successfully.
      *         - 0 if the user was not logged in.
+     * @throws RemoteException - if there is an issue with remote communication.
      */
     public int logout(String username) throws RemoteException {
         if (loggedInUsers.contains(username.trim())) {
@@ -98,10 +115,9 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * 
      * @param username - The username for which to load user data.
      * @return - A string containing the user data loaded from the file, or default
-     *         user data if
-     *         the file is newly created.
-     * @throws IOException - If an I/O error occurs while creating the file or
-     *                     reading from it.
+     *         user data if the file is newly created.
+     * @throws RemoteException - If an I/O error occurs while creating the file or
+     *                         reading from it.
      */
     public String load(String username) throws RemoteException {
         String filePath = Constants.USER_DATA_DIRECTORY + username + ".txt";
@@ -137,6 +153,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @param data     - The user data to save.
      * @return - 1 if the user data was saved successfully.
      *         - 0 if an error occurred while saving.
+     * @throws RemoteException - if there is an issue with remote communication.
      */
     public int save(String username, String data) throws RemoteException {
         File userDataFile = new File(Constants.USER_DATA_DIRECTORY +
