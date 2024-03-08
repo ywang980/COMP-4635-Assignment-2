@@ -1,0 +1,3 @@
+Username;newUser
+Score;0
+State;Idle

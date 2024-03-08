@@ -1,0 +1,3 @@
+Username;test
+Score;0
+State;Idle
