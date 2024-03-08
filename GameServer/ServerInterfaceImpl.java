@@ -1,20 +1,18 @@
 package GameServer;
 
+import UserAccountServer.UserAccountService;
 import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,84 +25,57 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     }
 
     public int checkValidUser(String username) throws RemoteException {
-        try (Socket accountSocket = new Socket("localhost", Constants.UAS_PORT)) {
-            BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(accountSocket.getOutputStream()));
-
-            String output = "login;" + username.trim();
-            dataOut.write(output);
-            dataOut.newLine();
-            dataOut.flush();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(accountSocket.getInputStream()));
-            int loginResult = Integer.parseInt(in.readLine());
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+            int loginResult = userAccountService.login(username.trim());
 
             if (loginResult == 0) {
                 throw new RemoteException(Constants.DUPLICATE_LOGIN);
             } else
                 return loginResult;
-        } catch (IOException e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS);
+        } catch (Exception e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
         }
     }
 
     public UserData validateUserData(String username) throws RemoteException {
-        UserData userData = null;
-        try (Socket accountSocket = new Socket("localhost", Constants.UAS_PORT)) {
-            BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(accountSocket.getOutputStream()));
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+            String userDataString = userAccountService.load(username);
+            return new UserData(userDataString);
 
-            String output = "load;" + username;
-            dataOut.write(output);
-            dataOut.newLine();
-            dataOut.flush();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(accountSocket.getInputStream()));
-            StringBuilder userDataBuilder = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                userDataBuilder.append(line).append("\n");
-            }
-            userData = new UserData(userDataBuilder.toString());
-        } catch (IOException e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS);
+        } catch (Exception e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
         }
-        return userData;
     }
 
     public void saveGame(UserData userData) throws RemoteException {
-        try (Socket accountSocket = new Socket("localhost", Constants.UAS_PORT)) {
-            BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(accountSocket.getOutputStream()));
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+            int saveResult = userAccountService.save(userData.getUsername(), userData.getUserDataString());
 
-            String output = "save;" + userData.getUsername();
-            dataOut.write(output + "\n" + userData.getUserDataString());
-            dataOut.newLine();
-            dataOut.flush();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(accountSocket.getInputStream()));
-            int saveResult = Integer.parseInt(in.readLine());
             if (saveResult == 0) {
                 throw new RemoteException(Constants.COULD_NOT_SAVE);
             }
-        } catch (IOException e) {
-            throw new RemoteException(Constants.COULD_NOT_SAVE);
+        } catch (Exception e) {
+            throw new RemoteException(Constants.COULD_NOT_SAVE, e);
         }
     }
 
     public void logoutUser(String username) throws RemoteException {
-        try (Socket accountSocket = new Socket("localhost", Constants.UAS_PORT)) {
-            BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(accountSocket.getOutputStream()));
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+            int logoutResult = userAccountService.logout(username.trim());
 
-            String output = "logout;" + username.trim();
-            dataOut.write(output);
-            dataOut.newLine();
-            dataOut.flush();
-
-            BufferedReader inLogout = new BufferedReader(new InputStreamReader(accountSocket.getInputStream()));
-            int logoutResult = Integer.parseInt(inLogout.readLine());
             if (logoutResult == 0) {
                 throw new RemoteException("Failed to log out user: " + username);
             }
-        } catch (IOException e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS);
+        } catch (Exception e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
         }
     }
 

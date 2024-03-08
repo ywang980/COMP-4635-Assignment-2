@@ -18,7 +18,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
 
     public static void main(String[] args) {
         try {
-            Registry registry = LocateRegistry.getRegistry("hostname", 1099);
+            Registry registry = LocateRegistry.getRegistry("localhost", 1099);
 
             UserAccountService userAccountService = new UserAccountServer();
             registry.rebind("UserAccountService", userAccountService);
