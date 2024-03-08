@@ -104,7 +104,7 @@ public class Client {
 
             try {
                 if (input.equals(Constants.SAVE_CODE)) {
-                    server.saveGame(userData);
+                    // server.saveGame(userData);
                     break;
                 } else if (input.matches(Constants.NO_SPECIAL_CHAR_REGEX)) {
                     System.out.println("\nInvalid guess: " + input + ". Try again.");
@@ -119,9 +119,18 @@ public class Client {
                     activeGameData.setMessage("");
                 }
             } catch (RemoteException e) {
-                // activeGameData.setGameStatus(true);
                 handleError(server, userData, e);
             }
+        }
+
+        try {
+            if(!activeGameData.getGameStatus()){
+                userData.getGameState().resetPuzzle();
+            }
+
+            server.saveGame(userData);
+        } catch (RemoteException e) {
+            handleError(server, userData, e);
         }
         return userData;
     }

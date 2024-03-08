@@ -120,8 +120,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             }
             // Continue existing game; argument may be any non-empty string
             case "Continue": {
-                if (userData.getGameState().getState()
-                        .equals(Constants.PLAY_STATE)) {
+                if (userData.getGameState().getPuzzle() != null) {
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
                 }

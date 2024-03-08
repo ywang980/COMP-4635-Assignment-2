@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Represents user data, including username, score, and the game state object.
  */
-public class UserData implements Serializable{
+public class UserData implements Serializable {
     private final String username;
     private int score;
     private GameState gameState;
@@ -27,11 +27,13 @@ public class UserData implements Serializable{
 
         int gameStateIndex = data.indexOf("\n", data.indexOf("\n", scoreEndIndex));
 
-        if (data.contains("State;Play")) {
-            this.gameState = new GameState(data.substring(gameStateIndex));
-        } else {
-            this.gameState = new GameState();
-        }
+        this.gameState = new GameState(data.substring(gameStateIndex));
+
+        // if (data.contains("State;Play")) {
+        // this.gameState = new GameState(data.substring(gameStateIndex));
+        // } else {
+        // this.gameState = new GameState();
+        // }
     }
 
     /**

@@ -7,7 +7,7 @@ import GameServer.Constants;
 /**
  * Represents the state of the game.
  */
-public class GameState implements Serializable{
+public class GameState implements Serializable {
     private String state;
     private int attempts;
     private String[] words;
@@ -42,7 +42,9 @@ public class GameState implements Serializable{
     public GameState(String data) {
         String[] lines = data.trim().split("\n");
         this.state = lines[0].split(";")[1];
-        if (this.state.equals(Constants.PLAY_STATE)) {
+        if (lines.length == 1) {
+            this.puzzle = null;
+        } else {
             this.attempts = Integer.parseInt(lines[1].split(";")[1]);
             String wordsData = lines[2].split(";")[1];
             this.words = wordsData.split(",");
@@ -105,6 +107,13 @@ public class GameState implements Serializable{
      */
     public Puzzle getPuzzle() {
         return this.puzzle;
+    }
+
+    /**
+     * Reset puzzle to null after a completed game.
+     */
+    public void resetPuzzle() {
+        this.puzzle = null;
     }
 
     /**
