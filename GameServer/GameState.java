@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Represents the state of the game.
  */
-public class GameState {
+public class GameState implements Serializable{
     private String state;
     private int attempts;
     private String[] words;

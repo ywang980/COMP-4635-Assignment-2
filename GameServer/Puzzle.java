@@ -1,5 +1,6 @@
 package GameServer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,7 +9,7 @@ import java.util.Random;
 /**
  * Represents a puzzle with a stem, dimensions, and two 2D char grids.
  */
-class Puzzle {
+public class Puzzle implements Serializable{
     private String stem;
 
     // Puzzle height and width (i.e., rows/columns, respectively)

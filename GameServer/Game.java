@@ -3,10 +3,10 @@ package GameServer;
 import UserAccountServer.UserData;
 import java.io.*;
 import java.net.*;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -591,8 +591,7 @@ public class Game {
 
             if (successfulGuess) {
                 out.println("\n*Successful guess: '" + input + "'. Puzzle updated.");
-            }
-            else{
+            } else {
                 out.println("\n*Unsuccessful guess: '" + input + "'.");
             }
 
@@ -607,22 +606,6 @@ public class Game {
                 out.println("You lose!");
                 return 1;
             }
-
-            // if (successfulGuess) {
-            //     out.println("\n*Successful guess: '" + input + "'. Puzzle updated.");
-            //     if (gameState.getPuzzle().checkPuzzleSolved()) {
-            //         gameState.setState(Constants.IDLE_STATE);
-            //         out.println("You win!");
-            //         return 2;
-            //     }
-            // } else {
-            //     out.println("\n*Unsuccessful guess: '" + input + "'.");
-            //     if (gameState.getAttempts() == 0) {
-            //         gameState.setState(Constants.IDLE_STATE);
-            //         out.println("You lose!");
-            //         return 1;
-            //     }
-            // }
             return 0;
         }
 
@@ -679,7 +662,7 @@ public class Game {
                     out.println("Logging out: " + username);
                 }
             } catch (IOException e) {
-                out.println("Error: Could not communicate with user account server.");
+                out.println(Constants.CANT_COMMUNICATE_UAS);
                 e.printStackTrace();
             }
         }
@@ -693,7 +676,7 @@ public class Game {
             try {
                 saveGame(userData);
             } catch (IOException saveError) {
-                out.println("Could not save user data.");
+                out.println(Constants.COULD_NOT_SAVE);
             }
         }
     }

@@ -1,11 +1,13 @@
 package UserAccountServer;
 
+import java.io.Serializable;
+
 import GameServer.GameState;
 
 /**
  * Represents user data, including username, score, and the game state object.
  */
-public class UserData {
+public class UserData implements Serializable{
     private final String username;
     private int score;
     private GameState gameState;
