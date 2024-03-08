@@ -1,15 +1,15 @@
-package Temp;
-
-import GameServer.Constants;
-import GameServer.ServerInterface;
-import UserAccountServer.UserData;
-import UserAccountServer.ActiveGameData;
+package Client;
 
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
+
+import GameServer.Constants;
+import GameServer.ServerInterface;
+import UserAccountServer.UserData;
+import UserAccountServer.ActiveGameData;
 
 public class Client {
 
@@ -82,7 +82,7 @@ public class Client {
                 }
                 userData = server.processUserInput(userData, input);
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
-                    playGame(server, userData);
+                    userData = playGame(server, userData);
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);
@@ -90,7 +90,7 @@ public class Client {
         } while (true);
     }
 
-    private static void playGame(ServerInterface server, UserData userData) {
+    private static UserData playGame(ServerInterface server, UserData userData) {
         Scanner scanner = new Scanner(System.in);
         ActiveGameData activeGameData = new ActiveGameData(userData, true, "");
         String input;
@@ -123,13 +123,7 @@ public class Client {
                 handleError(server, userData, e);
             }
         }
-        try{
-            server.saveGame(userData);
-        }
-        catch (RemoteException e){
-            System.out.println(e.getMessage());
-        }
-
+        return userData;
     }
 
     private static void handleError(ServerInterface server, UserData userData, Exception e) {

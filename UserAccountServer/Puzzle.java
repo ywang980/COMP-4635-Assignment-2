@@ -1,4 +1,4 @@
-package GameServer;
+package UserAccountServer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

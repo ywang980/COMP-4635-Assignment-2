@@ -1,9 +1,5 @@
 package GameServer;
 
-import UserAccountServer.UserAccountService;
-import UserAccountServer.UserData;
-import UserAccountServer.ActiveGameData;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -18,6 +14,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+
+import UserAccountServer.UserAccountService;
+import UserAccountServer.UserData;
+import UserAccountServer.ActiveGameData;
+import UserAccountServer.GameState;
 
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
     public ServerInterfaceImpl() throws RemoteException {
@@ -92,13 +93,13 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             case "Add": {
                 contactDatabase('A', argument);
                 userData.getGameState().setState(Constants.IDLE_STATE);
-                return userData;
+                break;
             }
             // Remove word from database
             case "Remove": {
                 contactDatabase('B', argument);
                 userData.getGameState().setState(Constants.IDLE_STATE);
-                return userData;
+                break;
             }
             // Start new game with specified word count
             // Argument must be an integer from 2-15, inclusive
@@ -111,7 +112,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
                     createNewGame(userData, wordCount);
                     userData.getGameState().setState(Constants.PLAY_STATE);
-                    return userData;
+                    break;
                     // playGame(in, out, userData);
                 } catch (NumberFormatException e) {
                     throw new RemoteException(Constants.INVALID_WORD_COUNT);
@@ -122,13 +123,16 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                 if (userData.getGameState().getState()
                         .equals(Constants.PLAY_STATE)) {
                     userData.getGameState().setState(Constants.PLAY_STATE);
-                    return userData;
+                    break;
                 }
                 throw new RemoteException(Constants.NO_EXISTING_GAME);
             }
             default:
                 throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
         }
+
+        saveGame(userData);
+        return userData;
     }
 
     private static String contactDatabase(char command, String payload) throws RemoteException {

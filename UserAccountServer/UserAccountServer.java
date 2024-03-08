@@ -1,12 +1,13 @@
 package UserAccountServer;
 
-import GameServer.Constants;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+
+import GameServer.Constants;
 
 /**
  * Represents a server managing user accounts and handling client interactions.

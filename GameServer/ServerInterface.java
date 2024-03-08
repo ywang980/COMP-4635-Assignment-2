@@ -1,10 +1,10 @@
 package GameServer;
 
-import UserAccountServer.UserData;
-import UserAccountServer.ActiveGameData;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import UserAccountServer.UserData;
+import UserAccountServer.ActiveGameData;
 
 public interface ServerInterface extends Remote {
     int checkValidUser(String username) throws RemoteException;

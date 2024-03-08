@@ -2,8 +2,6 @@ package UserAccountServer;
 
 import java.io.Serializable;
 
-import GameServer.GameState;
-
 /**
  * Represents user data, including username, score, and the game state object.
  */

@@ -1,7 +1,8 @@
-package GameServer;
+package UserAccountServer;
 
 import java.io.*;
-import java.util.Arrays;
+
+import GameServer.Constants;
 
 /**
  * Represents the state of the game.
@@ -17,6 +18,7 @@ public class GameState implements Serializable{
      */
     public GameState() {
         this.state = Constants.IDLE_STATE;
+        this.puzzle = null;
     }
 
     /**
@@ -115,7 +117,7 @@ public class GameState implements Serializable{
 
         stringBuilder.append("State;").append(this.state).append("\n");
 
-        if (this.state.equals(Constants.PLAY_STATE)) {
+        if (this.puzzle != null) {
             stringBuilder.append("Attempts;").append(this.attempts).append("\n");
 
             stringBuilder.append("Words;");
