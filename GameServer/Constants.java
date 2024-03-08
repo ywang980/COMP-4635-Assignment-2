@@ -1,6 +1,8 @@
 package GameServer;
 
 public class Constants {
+        public static final int DEFAULT_RMI_PORT = 1099;
+
         public static final int BUFFER_LIMIT = 1000; // UDP buffer limit
         public static final String USAGE = "java Game [Port] [Word Microservice Port]";
 
@@ -65,6 +67,7 @@ public class Constants {
         public static final String PREMATURE_EOF = "End of file reached prematurely.";
         public static final String VALUE_PARSE_FAIL = "Failed to parse value in user data.";
         public static final String NON_INTEGER_VALUE = "Parsed value is not an integer.";
+        public static final String COULD_NOT_SAVE = "Could not save user data.";
 
         // Error messages regarding invalid user input
         public static final String INVALID_COMMAND_SYNTAX = "Invalid command syntax. Try again.";
