@@ -1,6 +1,5 @@
 package GameServer;
 
-
 import java.net.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -42,6 +41,17 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         }
     }
 
+    /**
+     * Establishes a connection to the remote database service.
+     *
+     * @throws MalformedURLException - if the URL for the remote database is
+     *                               malformed.
+     * @throws NotBoundException     - if the specified name in the registry is not
+     *                               currently bound.
+     * @throws RemoteException       - if there is an issue with remote
+     *                               communication while attempting to connect to
+     *                               the database.
+     */
     public static void connectToDatabase() throws MalformedURLException, NotBoundException, RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.WDBS_PORT);
@@ -150,16 +160,40 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @return - The updated UserData object after processing the input.
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the input.
+     * @throws SQLException    - if there is an error while accessing or
+     *                         manipulating the database during processing.
      */
     public UserData processUserInput(UserData userData, String input)
             throws RemoteException, SQLException {
         String[] tokenizedInput = input.split(";");
         if (tokenizedInput.length <= 1)
-            throw new RuntimeException(Constants.INVALID_COMMAND_SYNTAX);
+            throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
 
         String command = tokenizedInput[0];
         String argument = tokenizedInput[1];
 
+        processCommand(userData, command, argument);
+        saveGame(userData);
+        return userData;
+    }
+
+    /**
+     * Executes a specific game command.
+     *
+     * Details: if the word database microservice cannot be reached,
+     * will attempt to reconnect 1 more time before throwing a RemoteException
+     * to the client caller.
+     * 
+     * 
+     * @param userData - The UserData object representing the user's data.
+     * @param command  - The command to execute.
+     * @param argument - The argument associated with the command.
+     * @throws RemoteException - if there is an issue with remote communication.
+     * @throws SQLException    - if there is an error while accessing or
+     *                         manipulating the database during processing.
+     */
+    private static void processCommand(UserData userData, String command, String argument)
+            throws RemoteException, SQLException {
         switch (command) {
             // Add word to database
             case "Add": {
@@ -182,24 +216,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                 break;
             }
             // Start new game with specified word count
-            // Argument must be an integer from 2-15, inclusive
+            // Argument must be an integer string from 2-15, inclusive
             case "New Game": {
-                try {
-                    int wordCount = Integer.parseInt(argument.strip());
-                    if (wordCount < 2 || wordCount > Constants.MAX_WORD_COUNT) {
-                        throw new RuntimeException(Constants.WORD_COUNT_NOT_IN_RANGE);
-                    }
-
-                    createNewGame(userData, wordCount);
-                    userData.getGameState().setState(Constants.PLAY_STATE);
-                    break;
-                } catch (RemoteException e) {
-                    reconnectDatabase(e);
-                } catch (NumberFormatException e) {
-                    throw new RemoteException(Constants.INVALID_WORD_COUNT);
-                } catch (MalformedURLException | NotBoundException e) {
-                    throw new RuntimeException(e);
-                }
+                processNewGame(userData, argument);
+                break;
             }
             // Continue existing game; argument may be any non-empty string
             case "Continue": {
@@ -207,33 +227,57 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
                 }
-                throw new RuntimeException(Constants.NO_EXISTING_GAME);
+                throw new RemoteException(Constants.NO_EXISTING_GAME);
             }
             default: {
+                throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
             }
-        }
-        saveGame(userData);
-        return userData;
-    }
-
-    private static void reconnectDatabase(Exception exception) throws RuntimeException {
-        try {
-            connectToDatabase();
-        } catch (RemoteException | MalformedURLException | NotBoundException e) {
-            throw new RuntimeException(Constants.CANT_COMMUNICATE_WDBS, exception);
         }
     }
 
     /**
-     * Contacts the database server to perform a specified command with the given
-     * payload.
+     * Attempts to reconnect to the database in case of a communication error.
      *
-     * @param command - The command to be performed.
-     * @param payload - The payload associated with the command.
-     * @return - The response received from the database server.
-     * @throws RemoteException - if there is an issue with remote communication or
-     *                         contacting the database.
+     * @param exception - The exception that triggered the reconnection attempt.
+     * @throws RemoteException - if there is an issue with remote communication
+     *                         while attempting to reconnect.
      */
+    private static void reconnectDatabase(Exception exception) throws RemoteException {
+        try {
+            connectToDatabase();
+        } catch (RemoteException | MalformedURLException | NotBoundException e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS, exception);
+        }
+    }
+
+    /**
+     * Processes the initiation of a new game with the specified word count.
+     *
+     * @param userData - The UserData object representing the user's data.
+     * @param argument - The argument specifying the word count for the new game.
+     * @throws RemoteException - if there is an issue with remote communication
+     *                         while attempting to generate the new game.
+     * @throws SQLException    - if there is an error while accessing or
+     *                         manipulating the database during processing.
+     */
+    private static void processNewGame(UserData userData, String argument)
+            throws RemoteException, SQLException {
+        try {
+            int wordCount = Integer.parseInt(argument.strip());
+            if (wordCount < 2 || wordCount > Constants.MAX_WORD_COUNT) {
+                throw new RemoteException(Constants.WORD_COUNT_NOT_IN_RANGE);
+            }
+
+            createNewGame(userData, wordCount);
+            userData.getGameState().setState(Constants.PLAY_STATE);
+        } catch (RemoteException e) {
+            reconnectDatabase(e);
+        } catch (NumberFormatException e) {
+            throw new RemoteException(Constants.INVALID_WORD_COUNT);
+        } catch (MalformedURLException | NotBoundException e) {
+            throw new RemoteException(e.getMessage());
+        }
+    }
 
     /**
      * Create a new game by requesting a stem word and a list of (valid) leaf words
@@ -269,7 +313,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    private void createNewGame(UserData userData, int wordCount)
+    private static void createNewGame(UserData userData, int wordCount)
             throws RemoteException, MalformedURLException, NotBoundException, SQLException {
         String words[] = generateWordList(wordCount);
 
@@ -295,7 +339,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication
      *                         in fetching the stem or a leaf.
      */
-    private String[] generateWordList(int wordCount) throws RemoteException, SQLException {
+    private static String[] generateWordList(int wordCount) throws RemoteException, SQLException {
         while (true) {
             ArrayList<String> wordsList = new ArrayList<>();
             String stem = fetchStem(wordCount - 1);
@@ -316,7 +360,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching the stem.
      */
-    private String fetchStem(int minimumLength) throws RemoteException, SQLException {
+    private static String fetchStem(int minimumLength) throws RemoteException, SQLException {
         try {
             return database.randomWordLength(minimumLength);
         } catch (RemoteException e) {
@@ -331,7 +375,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @param stem      - The stem string used for generating leaf indices.
      * @return - An ArrayList containing randomly generated leaf indices.
      */
-    private ArrayList<Integer> generateLeafIndices(int wordCount, String stem) {
+    private static ArrayList<Integer> generateLeafIndices(int wordCount, String stem) {
         Set<Integer> leafIndices = new HashSet<>();
         while (leafIndices.size() < wordCount - 1) {
             leafIndices.add(new Random().nextInt(stem.length()));
@@ -358,7 +402,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching a leaf.
      */
-    private boolean populateLeaves(ArrayList<Integer> leafIndicesList, String stem,
+    private static boolean populateLeaves(ArrayList<Integer> leafIndicesList, String stem,
             ArrayList<String> wordsList) throws RemoteException, SQLException {
 
         String leaf = "";
@@ -393,7 +437,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching the leaf.
      */
-    private String fetchLeaf(char matchingCharacter) throws RemoteException, SQLException {
+    private static String fetchLeaf(char matchingCharacter) throws RemoteException, SQLException {
         try {
             return database.randomWord(matchingCharacter);
         }
