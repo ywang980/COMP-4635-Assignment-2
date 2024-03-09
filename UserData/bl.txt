@@ -1,0 +1,8 @@
+Username;bl
+Score;0
+State;Play
+Attempts;4
+Words;m, menopause
+........---------.+
+$
+........menopause.+

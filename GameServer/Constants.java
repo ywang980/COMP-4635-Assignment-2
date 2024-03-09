@@ -1,7 +1,7 @@
 package GameServer;
 
 public class Constants {
-        public static final int DEFAULT_RMI_PORT = 1099;
+        public static final int DEFAULT_RMI_PORT = 5599;
 
         public static final int BUFFER_LIMIT = 1000; // UDP buffer limit
 
