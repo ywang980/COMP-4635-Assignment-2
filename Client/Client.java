@@ -49,6 +49,7 @@ public class Client {
 
     /**
      * Validates the username entered by the user.
+     * Will repeatedly prompt user until valid username is provided.
      *
      * @param server - The ServerInterface object for server communication.
      * @return - The validated username.
@@ -80,7 +81,7 @@ public class Client {
     /**
      * Serves the user by providing a menu and processing user input.
      *
-     * @param server - The ServerInterface object for server communication.
+     * @param server   - The ServerInterface object for server communication.
      * @param userData - The UserData object representing the user's data.
      */
     private static void serveUser(ServerInterface server, UserData userData) {
@@ -89,17 +90,22 @@ public class Client {
 
         // Sentinel loop for the user menu
         do {
+            // Print user menu
             System.out.println("\nUser: " + userData.getUsername());
             System.out.println("Score: " + userData.getScore());
             System.out.println(Constants.USER_MENU);
 
             input = scanner.nextLine().trim();
             try {
+                // Save and exit if user input is "*Exit*""
                 if (input.equals(Constants.EXIT_CODE)) {
                     userData.getGameState().setState(Constants.IDLE_STATE);
                     server.saveGame(userData);
                     break;
                 }
+
+                // Process user input, and proceed to gameplay menu if appropriate (command is
+                // New Game or Continue)
                 userData = server.processUserInput(userData, input);
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
                     userData = playGame(server, userData);
@@ -113,7 +119,14 @@ public class Client {
     /**
      * Plays the game by processing user input and updating the game state.
      *
-     * @param server - The ServerInterface object for server communication.
+     * Details: user input is a string which may not contain any of the following:
+     * '+', '-', '.'
+     * 
+     * If string is 1 character, it is interpreted as a letter guess.
+     * If string is 2+ characters, it is interpreted as a word guess.
+     * If string begins with a '?', it is interpreted as a database query.
+     * 
+     * @param server   - The ServerInterface object for server communication.
      * @param userData - The UserData object representing the user's data.
      * @return - The UserData object after playing the game.
      */
@@ -130,8 +143,8 @@ public class Client {
             input = scanner.nextLine();
 
             try {
+                // Save and return to main menu if user input is "*Save*""
                 if (input.equals(Constants.SAVE_CODE)) {
-                    // server.saveGame(userData);
                     break;
                 } else if (input.matches(Constants.NO_SPECIAL_CHAR_REGEX)) {
                     System.out.println("\nInvalid guess: " + input + ". Try again.");
@@ -151,7 +164,7 @@ public class Client {
         }
 
         try {
-            if(!activeGameData.getGameStatus()){
+            if (!activeGameData.getGameStatus()) {
                 userData.getGameState().resetPuzzle();
             }
 
@@ -164,10 +177,11 @@ public class Client {
 
     /**
      * Handles errors that occur during client-server communication.
+     * Attempts to save user data if possible.
      *
-     * @param server - The ServerInterface object for server communication.
+     * @param server   - The ServerInterface object for server communication.
      * @param userData - The UserData object representing the user's data.
-     * @param e - The Exception that occurred.
+     * @param e        - The Exception that occurred.
      */
     private static void handleError(ServerInterface server, UserData userData, Exception e) {
         System.out.println("\nError: " + (e.getMessage()));

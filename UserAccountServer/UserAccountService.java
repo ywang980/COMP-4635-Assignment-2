@@ -4,7 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * The UserAccountService interface defines the remote methods for managing user accounts.
+ * The UserAccountService interface defines the remote methods for managing user
+ * accounts.
  */
 public interface UserAccountService extends Remote {
 

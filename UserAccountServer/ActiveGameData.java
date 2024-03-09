@@ -3,19 +3,21 @@ package UserAccountServer;
 import java.io.Serializable;
 
 /**
- * The ActiveGameData class represents data associated with an active game session.
+ * The ActiveGameData class represents data associated with an active game
+ * session.
  */
-public class ActiveGameData implements Serializable{
+public class ActiveGameData implements Serializable {
     private UserData userData;
     private boolean gameStatus;
     private String message;
 
     /**
-     * Constructs an ActiveGameData object with the specified user data, game status, and message.
+     * Constructs an ActiveGameData object with the specified user data, game
+     * status, and message.
      *
-     * @param userData - The UserData associated with the game session.
+     * @param userData   - The UserData associated with the game session.
      * @param gameStatus - The status of the game session.
-     * @param message - The message associated with the game session.
+     * @param message    - The message associated with the game session.
      */
     public ActiveGameData(UserData userData, boolean gameStatus, String message) {
         this.userData = userData;
@@ -28,7 +30,7 @@ public class ActiveGameData implements Serializable{
      *
      * @return - The UserData associated with the game session.
      */
-    public UserData getUserData(){
+    public UserData getUserData() {
         return this.userData;
     }
 
@@ -37,7 +39,7 @@ public class ActiveGameData implements Serializable{
      *
      * @return - The status of the game session.
      */
-    public boolean getGameStatus(){
+    public boolean getGameStatus() {
         return this.gameStatus;
     }
 
@@ -46,7 +48,7 @@ public class ActiveGameData implements Serializable{
      *
      * @param gameStatus - The status of the game session.
      */
-    public void setGameStatus(boolean gameStatus){
+    public void setGameStatus(boolean gameStatus) {
         this.gameStatus = gameStatus;
     }
 
@@ -55,7 +57,7 @@ public class ActiveGameData implements Serializable{
      *
      * @return - The message associated with the game session.
      */
-    public String getMessage(){
+    public String getMessage() {
         return this.message;
     }
 
@@ -64,7 +66,7 @@ public class ActiveGameData implements Serializable{
      *
      * @param message - The message associated with the game session.
      */
-    public void setMessage(String message){
+    public void setMessage(String message) {
         this.message = message;
     }
 }

@@ -9,7 +9,7 @@ import java.util.Random;
 /**
  * Represents a puzzle with a stem, dimensions, and two 2D char grids.
  */
-public class Puzzle implements Serializable{
+public class Puzzle implements Serializable {
     private String stem;
 
     // Puzzle height and width (i.e., rows/columns, respectively)
@@ -35,7 +35,7 @@ public class Puzzle implements Serializable{
 
         int longestLeafLength = this.findLongestLeafLength(words);
         this.columns = longestLeafLength * 2 + 1;
-        if(longestLeafLength % 2 == 0){
+        if (longestLeafLength % 2 == 0) {
             this.columns++;
         }
 

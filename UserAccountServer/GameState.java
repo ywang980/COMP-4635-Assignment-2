@@ -42,6 +42,9 @@ public class GameState implements Serializable {
     public GameState(String data) {
         String[] lines = data.trim().split("\n");
         this.state = lines[0].split(";")[1];
+
+        // Single line GameState indicates no ongoing game (i.e. no attempts
+        // count/Puzzle object)
         if (lines.length == 1) {
             this.puzzle = null;
         } else {
