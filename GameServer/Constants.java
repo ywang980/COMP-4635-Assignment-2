@@ -1,9 +1,9 @@
 package GameServer;
 
 public class Constants {
-        public static final int DEFAULT_RMI_PORT = 5599;
-
-        public static final int BUFFER_LIMIT = 1000; // UDP buffer limit
+        public static final int UAS_PORT = 5888;
+        public static final int WDBS_PORT = 6999;
+        public static final int GAME_SERVER_PORT = 5599;
 
         public static final String USER_DATA_DIRECTORY = "./UserData/";
 
@@ -42,8 +42,7 @@ public class Constants {
         // Error messages regarding network issues
         public static final String SOCKET_ERROR_OPEN_WORD = "Could not create socket to word database microservice.";
         public static final String CANT_COMMUNICATE_UAS = "Error, could not contact user account microservice.";
-        public static final String CANT_COMMUNICATE_WDBS = "Could not contact word database microservice.\n" +
-                        "Returning to previous menu.";
+        public static final String CANT_COMMUNICATE_WDBS = "Could not contact word database microservice.";
 
         // Error messages regarding user login
         public static final String DUPLICATE_LOGIN = "User already logged in.";

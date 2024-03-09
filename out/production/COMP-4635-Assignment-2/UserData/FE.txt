@@ -1,3 +1,0 @@
-Username;FE
-Score;0
-State;Idle

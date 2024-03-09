@@ -1,54 +1,37 @@
 package DatabaseServer;
 
-import java.io.IOException;
-import java.net.DatagramSocket;
-import java.util.ArrayList;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Random;
 import java.sql.*;
-
 
 /**
  *
  * Implements the datbase logic
  */
-public class DatabaseImp extends UnicastRemoteObject implements Database{
-   
+public class DatabaseImp extends UnicastRemoteObject implements Database {
 
     private Connection c;
 
-   
-
     public DatabaseImp() throws RemoteException, SQLException {
-
         super();
-
         establishDatabase();
-
-
     }
 
     /**
      *
      * Connects to SQL database
+     * 
      * @throws SQLException
      */
 
-private void establishDatabase() throws SQLException {
-
+    private void establishDatabase() throws SQLException {
         try {
-
             c = DriverManager.getConnection("jdbc:sqlite:./DatabaseServer/data/wordDatabase.db");
-
         }
-
-         catch (SQLException e) {
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 
     /**
      * Removes the specified word from the database.
@@ -72,24 +55,26 @@ private void establishDatabase() throws SQLException {
         String sql = "SELECT word FROM word WHERE word = '" + word + "' LIMIT 1;";
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
-            return rs.next();
-        }
+        return rs.next();
+    }
+
     /**
      * Adds the specified word to the database if it does not already exist.
      *
      * @param word The word to add to the database.
      */
-    public void addWord(String word) throws RemoteException{
+    public void addWord(String word) throws RemoteException {
         String sqlInsert = "INSERT INTO word (word) VALUES (?)";
         try {
-                PreparedStatement insertStmt = c.prepareStatement(sqlInsert);
-                insertStmt.setString(1, word);
-                insertStmt.executeUpdate();
-                System.out.println("Word added successfully.");
+            PreparedStatement insertStmt = c.prepareStatement(sqlInsert);
+            insertStmt.setString(1, word);
+            insertStmt.executeUpdate();
+            System.out.println("Word added successfully.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
     /**
      * Generates a random word from the database that contains the specified
      * substring.
@@ -100,7 +85,7 @@ private void establishDatabase() throws SQLException {
      */
     public String randomWord(char a) throws RemoteException, SQLException {
 
-        a =Character.toLowerCase(a);
+        a = Character.toLowerCase(a);
         String sql = "SELECT word FROM word WHERE word like '%" + a + "%' ORDER BY RANDOM() LIMIT 1;";
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
@@ -108,7 +93,9 @@ private void establishDatabase() throws SQLException {
             return rs.getString("word");
         } else {
             return ""; // Or handle the case where no word is found
-        }}
+        }
+    }
+
     /**
      * Generates a random word from the database with the specified length.
      *

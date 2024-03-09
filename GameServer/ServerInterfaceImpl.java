@@ -1,10 +1,8 @@
 package GameServer;
 
-import java.io.IOException;
+
 import java.net.*;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -27,8 +25,8 @@ import DatabaseServer.Database;
  */
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 
+    private static Database database;
 
-    Database database;
     /**
      * Constructs a ServerInterfaceImpl object.
      *
@@ -37,35 +35,21 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     public ServerInterfaceImpl() throws RemoteException, MalformedURLException, NotBoundException {
         super();
 
-        try{
-
-        connectToDatabase();}
-        catch (Exception e){
-
+        try {
+            connectToDatabase();
+        } catch (Exception e) {
             System.out.println("Database offline");
         }
-
     }
 
-
-    public void connectToDatabase() throws MalformedURLException, NotBoundException, RemoteException {
-
-        try{
-
-            Registry registry = LocateRegistry.getRegistry("localhost", 6999);
+    public static void connectToDatabase() throws MalformedURLException, NotBoundException, RemoteException {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.WDBS_PORT);
             database = (Database) registry.lookup("DatabaseService");
-
-        System.out.println("Connected to Database");}
-
-
-        catch(RemoteException e){
-
-            throw new RemoteException("Cannot connect to Database", e);
-
-
+            System.out.println("Connected to Database");
+        } catch (RemoteException e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS, e);
         }
-
-
     }
 
     /**
@@ -81,7 +65,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public int checkValidUser(String username) throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 5888);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
             int loginResult = userAccountService.login(username.trim());
 
@@ -103,7 +87,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public UserData validateUserData(String username) throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 5888);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
             String userDataString = userAccountService.load(username);
             return new UserData(userDataString);
@@ -122,7 +106,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public void saveGame(UserData userData) throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 5888);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
             int saveResult = userAccountService.save(userData.getUsername(), userData.getUserDataString());
 
@@ -143,7 +127,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public void logoutUser(String username) throws RemoteException {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 5888);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
             int logoutResult = userAccountService.logout(username.trim());
 
@@ -167,7 +151,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the input.
      */
-    public UserData processUserInput(UserData userData, String input) throws RemoteException, SQLException {
+    public UserData processUserInput(UserData userData, String input)
+            throws RemoteException, SQLException {
         String[] tokenizedInput = input.split(";");
         if (tokenizedInput.length <= 1)
             throw new RuntimeException(Constants.INVALID_COMMAND_SYNTAX);
@@ -178,43 +163,21 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         switch (command) {
             // Add word to database
             case "Add": {
-
-                try{
+                try {
                     database.addWord(argument);
-                    userData.getGameState().setState(Constants.IDLE_STATE);}
-                catch(RemoteException e){
-                    try{connectToDatabase();}
-
-                    catch (RemoteException | MalformedURLException | NotBoundException h){
-                        throw new RuntimeException("Cannot connect to server", e);
-
-
-                    }
-
-                    throw new RuntimeException("Cannot connect to server", e);
-
-
+                    userData.getGameState().setState(Constants.IDLE_STATE);
+                } catch (RemoteException e) {
+                    reconnectDatabase(e);
                 }
                 break;
             }
             // Remove word from database
             case "Remove": {
-
-                try{
-                database.removeWord(argument);
-                userData.getGameState().setState(Constants.IDLE_STATE);}
-                catch(RemoteException e){
-
-                    try{connectToDatabase();}
-
-                    catch (RemoteException | MalformedURLException | NotBoundException h){
-                        throw new RuntimeException("Cannot connect to server, try again", e);
-
-
-                    }
-
-                    throw new RuntimeException("Cannot connect to server", e);
-
+                try {
+                    database.removeWord(argument);
+                    userData.getGameState().setState(Constants.IDLE_STATE);
+                } catch (RemoteException e) {
+                    reconnectDatabase(e);
                 }
                 break;
             }
@@ -230,47 +193,35 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                     createNewGame(userData, wordCount);
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
-                }
-                catch (RemoteException e){
-
-                    try{connectToDatabase();}
-
-                    catch (RemoteException | MalformedURLException | NotBoundException h){
-                        throw new RuntimeException("Cannot connect to server, try again", e);
-
-
-                    }
-                    throw new RuntimeException("Cannot connect to server", e);
-
-
-                }
-                catch (NumberFormatException e) {
+                } catch (RemoteException e) {
+                    reconnectDatabase(e);
+                } catch (NumberFormatException e) {
                     throw new RemoteException(Constants.INVALID_WORD_COUNT);
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                } catch (NotBoundException e) {
+                } catch (MalformedURLException | NotBoundException e) {
                     throw new RuntimeException(e);
                 }
-
-
             }
             // Continue existing game; argument may be any non-empty string
             case "Continue": {
                 if (userData.getGameState().getPuzzle() != null) {
-                    System.out.println("Got it");
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
                 }
                 throw new RuntimeException(Constants.NO_EXISTING_GAME);
             }
-            default:{
-
-           }
-
+            default: {
+            }
         }
-
         saveGame(userData);
         return userData;
+    }
+
+    private static void reconnectDatabase(Exception exception) throws RuntimeException {
+        try {
+            connectToDatabase();
+        } catch (RemoteException | MalformedURLException | NotBoundException e) {
+            throw new RuntimeException(Constants.CANT_COMMUNICATE_WDBS, exception);
+        }
     }
 
     /**
@@ -318,7 +269,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    private  void createNewGame(UserData userData, int wordCount) throws RemoteException, MalformedURLException, NotBoundException, SQLException {
+    private void createNewGame(UserData userData, int wordCount)
+            throws RemoteException, MalformedURLException, NotBoundException, SQLException {
         String words[] = generateWordList(wordCount);
 
         // Number of attempts is either twice the word count, or the maximum
@@ -343,7 +295,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication
      *                         in fetching the stem or a leaf.
      */
-    private  String[] generateWordList(int wordCount) throws RemoteException, SQLException {
+    private String[] generateWordList(int wordCount) throws RemoteException, SQLException {
         while (true) {
             ArrayList<String> wordsList = new ArrayList<>();
             String stem = fetchStem(wordCount - 1);
@@ -365,13 +317,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      *                         fetching the stem.
      */
     private String fetchStem(int minimumLength) throws RemoteException, SQLException {
-
-        try{
-        return database.randomWordLength(minimumLength);}
-
-        catch (RemoteException e){
-
-            throw new RemoteException("Database offline",e);
+        try {
+            return database.randomWordLength(minimumLength);
+        } catch (RemoteException e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS);
         }
     }
 
@@ -382,7 +331,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @param stem      - The stem string used for generating leaf indices.
      * @return - An ArrayList containing randomly generated leaf indices.
      */
-    private  ArrayList<Integer> generateLeafIndices(int wordCount, String stem) {
+    private ArrayList<Integer> generateLeafIndices(int wordCount, String stem) {
         Set<Integer> leafIndices = new HashSet<>();
         while (leafIndices.size() < wordCount - 1) {
             leafIndices.add(new Random().nextInt(stem.length()));
@@ -409,7 +358,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching a leaf.
      */
-    private  boolean populateLeaves(ArrayList<Integer> leafIndicesList, String stem,
+    private boolean populateLeaves(ArrayList<Integer> leafIndicesList, String stem,
             ArrayList<String> wordsList) throws RemoteException, SQLException {
 
         String leaf = "";
@@ -444,15 +393,13 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching the leaf.
      */
-    private  String fetchLeaf(char matchingCharacter) throws RemoteException, SQLException {
-        String charToString = String.valueOf(matchingCharacter);
+    private String fetchLeaf(char matchingCharacter) throws RemoteException, SQLException {
+        try {
+            return database.randomWord(matchingCharacter);
+        }
 
-        try{
-        return database.randomWord(matchingCharacter);}
-
-        catch(RemoteException e){
-
-            throw new RemoteException("Cannot connect to server", e);
+        catch (RemoteException e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS);
         }
     }
 
@@ -471,7 +418,11 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         boolean found = false;
 
         // Check if input in database first
-        found =database.checkWord(input);
+        try {
+            found = database.checkWord(input);
+        } catch (RemoteException e) {
+            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS);
+        }
 
         if (found)
             return "\nThe word: " + input + " is in the database.";

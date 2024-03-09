@@ -3,19 +3,16 @@ package DatabaseServer;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import GameServer.Constants;
 
 /**
- *
- *
  * Establishes the database and registers it
  */
 public class DatabaseServer {
     public static void main(String[] args) {
         try {
-            LocateRegistry.createRegistry(6999);
-
-            // Now get the registry reference
-            Registry registry = LocateRegistry.getRegistry("localhost", 6999);
+            LocateRegistry.createRegistry(Constants.WDBS_PORT);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.WDBS_PORT);
 
             DatabaseImp database = new DatabaseImp();
             registry.rebind("DatabaseService", database);

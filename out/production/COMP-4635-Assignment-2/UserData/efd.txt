@@ -1,3 +1,0 @@
-Username;efd
-Score;0
-State;Idle

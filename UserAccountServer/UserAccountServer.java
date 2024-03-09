@@ -26,10 +26,10 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      */
     public static void main(String[] args) {
         try {
-            LocateRegistry.createRegistry(5888);
+            LocateRegistry.createRegistry(Constants.UAS_PORT);
 
             // Now get the registry reference
-            Registry registry = LocateRegistry.getRegistry("localhost", 5888);
+            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
 
             UserAccountService userAccountService = new UserAccountServer();
             registry.rebind("UserAccountService", userAccountService);

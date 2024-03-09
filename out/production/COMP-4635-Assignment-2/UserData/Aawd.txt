@@ -1,3 +1,0 @@
-Username;Aawd
-Score;0
-State;Idle
