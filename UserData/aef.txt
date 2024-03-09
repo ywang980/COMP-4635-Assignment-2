@@ -1,3 +1,0 @@
-Username;aef
-Score;0
-State;Idle

@@ -37,8 +37,13 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     public ServerInterfaceImpl() throws RemoteException, MalformedURLException, NotBoundException {
         super();
 
-        connectToDatabase();
+        try{
 
+        connectToDatabase();}
+        catch (Exception e){
+
+            System.out.println("Database offline");
+        }
 
     }
 
@@ -165,7 +170,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     public UserData processUserInput(UserData userData, String input) throws RemoteException, SQLException {
         String[] tokenizedInput = input.split(";");
         if (tokenizedInput.length <= 1)
-            throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
+            throw new RuntimeException(Constants.INVALID_COMMAND_SYNTAX);
 
         String command = tokenizedInput[0];
         String argument = tokenizedInput[1];
@@ -178,8 +183,17 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                     database.addWord(argument);
                     userData.getGameState().setState(Constants.IDLE_STATE);}
                 catch(RemoteException e){
+                    try{connectToDatabase();}
 
-                    throw new RemoteException("Cannot connect to server", e);
+                    catch (RemoteException | MalformedURLException | NotBoundException h){
+                        throw new RuntimeException("Cannot connect to server", e);
+
+
+                    }
+
+                    throw new RuntimeException("Cannot connect to server", e);
+
+
                 }
                 break;
             }
@@ -191,7 +205,16 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                 userData.getGameState().setState(Constants.IDLE_STATE);}
                 catch(RemoteException e){
 
-                    throw new RemoteException("Cannot connect to server", e);
+                    try{connectToDatabase();}
+
+                    catch (RemoteException | MalformedURLException | NotBoundException h){
+                        throw new RuntimeException("Cannot connect to server, try again", e);
+
+
+                    }
+
+                    throw new RuntimeException("Cannot connect to server", e);
+
                 }
                 break;
             }
@@ -199,32 +222,51 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             // Argument must be an integer from 2-15, inclusive
             case "New Game": {
                 try {
-                    int wordCount = Integer.parseInt(argument);
+                    int wordCount = Integer.parseInt(argument.strip());
                     if (wordCount < 2 || wordCount > Constants.MAX_WORD_COUNT) {
-                        throw new RemoteException(Constants.WORD_COUNT_NOT_IN_RANGE);
+                        throw new RuntimeException(Constants.WORD_COUNT_NOT_IN_RANGE);
                     }
 
                     createNewGame(userData, wordCount);
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
-                } catch (NumberFormatException e) {
+                }
+                catch (RemoteException e){
+
+                    try{connectToDatabase();}
+
+                    catch (RemoteException | MalformedURLException | NotBoundException h){
+                        throw new RuntimeException("Cannot connect to server, try again", e);
+
+
+                    }
+                    throw new RuntimeException("Cannot connect to server", e);
+
+
+                }
+                catch (NumberFormatException e) {
                     throw new RemoteException(Constants.INVALID_WORD_COUNT);
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 } catch (NotBoundException e) {
                     throw new RuntimeException(e);
                 }
+
+
             }
             // Continue existing game; argument may be any non-empty string
             case "Continue": {
                 if (userData.getGameState().getPuzzle() != null) {
+                    System.out.println("Got it");
                     userData.getGameState().setState(Constants.PLAY_STATE);
                     break;
                 }
-                throw new RemoteException(Constants.NO_EXISTING_GAME);
+                throw new RuntimeException(Constants.NO_EXISTING_GAME);
             }
-            default:
-                throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
+            default:{
+
+           }
+
         }
 
         saveGame(userData);

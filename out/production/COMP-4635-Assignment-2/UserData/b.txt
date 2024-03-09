@@ -1,3 +1,10 @@
 Username;b
 Score;0
 State;Idle
+Attempts;6
+Words;id,  vitrify,  armadillo
+.......-------....+
+....---------.....+
+$
+.......vitrify....+
+....armadillo.....+

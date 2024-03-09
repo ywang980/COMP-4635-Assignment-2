@@ -3,6 +3,12 @@ package DatabaseServer;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+
+/**
+ *
+ *
+ * Establishes the database and registers it
+ */
 public class DatabaseServer {
     public static void main(String[] args) {
         try {

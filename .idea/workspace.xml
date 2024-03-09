@@ -5,21 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/DatabaseServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMP-4635-Assignment-2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COMP-4635-Assignment-2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DatabaseServer/words.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/words.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseServer/data/wordDatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/data/wordDatabase.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Aawd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Andy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/FE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/aef.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/awd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/b.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/bl.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/efd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/ewwf.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/Client/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseImp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseServer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/data/wordDatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/data/wordDatabase.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/GameServer/ServerInterfaceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/GameServer/ServerInterfaceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/UserData/b.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/UserData/b.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +63,7 @@
       <recent name="GameServer" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.Client" />
       <module name="COMP-4635-Assignment-2" />
@@ -70,8 +77,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="DatabaseServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DatabaseServer.DatabaseServer" />
+      <module name="COMP-4635-Assignment-2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="DatabaseServer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.DatabaseServer" />
         <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
@@ -84,7 +105,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1709952829333</updated>
-      <workItem from="1709952830311" duration="7703000" />
+      <workItem from="1709952830311" duration="14151000" />
     </task>
     <servers />
   </component>

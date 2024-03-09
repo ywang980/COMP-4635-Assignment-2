@@ -111,12 +111,11 @@ public class Client {
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
                     userData = playGame(server, userData);
                 }
-            } catch (RemoteException e) {
-                handleError(server, userData, e);
-                if (e.getMessage().contains("Connection refused")) {
-                    break;
-                }
+            } catch (RuntimeException e) {
+             e.getMessage();
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
         } while (true);
@@ -156,7 +155,14 @@ public class Client {
                     System.out.println("\nInvalid guess: " + input + ". Try again.");
                     continue;
                 } else if (input.toCharArray()[0] == '?') {
-                    System.out.println(server.processWordQuery(userData, input.substring(1)));
+
+                    try{
+                    System.out.println(server.processWordQuery(userData, input.substring(1)));}
+
+                    catch (RuntimeException e){
+
+                        System.out.println("Database offline");
+                    }
                     continue;
                 } else {
                     activeGameData = server.processPuzzleGuess(userData, input);

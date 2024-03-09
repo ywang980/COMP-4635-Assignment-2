@@ -8,6 +8,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 import java.sql.*;
 
+
+/**
+ *
+ * Implements the datbase logic
+ */
 public class DatabaseImp extends UnicastRemoteObject implements Database{
    
 
@@ -23,6 +28,12 @@ public class DatabaseImp extends UnicastRemoteObject implements Database{
 
 
     }
+
+    /**
+     *
+     * Connects to SQL database
+     * @throws SQLException
+     */
 
 private void establishDatabase() throws SQLException {
 
