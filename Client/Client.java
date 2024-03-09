@@ -42,8 +42,8 @@ public class Client {
                 System.out.println("Connection successfully closed.");
             }
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            e.printStackTrace();
+            // System.out.println("Exception: " + e.getMessage());
+            System.out.println("Connection error. Process will now terminate.");
         }
     }
 
@@ -112,6 +112,9 @@ public class Client {
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);
+                if (e.getMessage().contains("Connection refused")) {
+                    break;
+                }
             }
         } while (true);
     }
@@ -160,6 +163,9 @@ public class Client {
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);
+                if (e.getMessage().contains("Connection refused")) {
+                    break;
+                }
             }
         }
 

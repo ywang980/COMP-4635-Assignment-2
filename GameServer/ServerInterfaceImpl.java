@@ -301,13 +301,13 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     /**
      * Fetches the stem with a specified minimum length from the database.
      *
-     * @param length - Minimum stem length.
+     * @param minimumLength - Minimum stem length.
      * @return - The stem fetched from the database.
      * @throws RemoteException - if there is an issue with remote communication in
      *                         fetching the stem.
      */
-    private static String fetchStem(int a) throws RemoteException {
-        return contactDatabase('E', String.valueOf(a));
+    private static String fetchStem(int minimumLength) throws RemoteException {
+        return contactDatabase('E', String.valueOf(minimumLength));
     }
 
     /**
