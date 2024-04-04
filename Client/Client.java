@@ -4,10 +4,11 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Random;
 import java.util.Scanner;
 
 import GameServer.Constants;
-import GameServer.Server;
+import GameServer.ServerFactory;
 import GameServer.ServerInterface;
 import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
@@ -17,19 +18,35 @@ import UserAccountServer.ActiveGameData;
  */
 public class Client {
 
+    private static Random duplicator = new Random();
+
+    private static int sequence=0;
     /**
      * Main method to start the client.
+     *
+     * Gets the factory and then generates a game server with it.
      *
      * @param args - Command-line arguments (not used).
      */
     public static void main(String[] args) {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.GAME_SERVER_PORT);
-            ServerInterface server = (ServerInterface) registry.lookup("Server");
+            ServerFactory serverMaker = (ServerFactory) registry.lookup("Server");
+            ServerInterface server = (ServerInterface) serverMaker.createServer( sequence);
+            sequence++;
+
             String username = validateUserName(server);
 
             try {
-                UserData userData = server.validateUserData(username);
+                UserData userData = server.validateUserData(username, sequence);
+
+                if(duplicator.nextBoolean()){
+                  userData = server.validateUserData(username, sequence);
+
+                }
+                userData = server.validateUserData(username, sequence);
+                sequence++;
+
                 if (userData != null) {
                     System.out.println("Client: '" + userData.getUsername() + "' connected.");
                     Thread heartbeatThread = new Thread(() -> heartbeat(server, username));
@@ -40,9 +57,20 @@ public class Client {
                 System.out.println(e.getMessage());
             } finally {
                 if (username != null) {
-                    server.logoutUser(username);
+
+
+                    server.logoutUser(username, sequence);
+
+                    if(duplicator.nextBoolean()){
+                        server.logoutUser(username, sequence);
+
+
+                    }
+                    sequence++;
+
                 }
                 System.out.println("Connection successfully closed.");
+                System.exit(0);
             }
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
@@ -86,7 +114,15 @@ public class Client {
             try {
                 System.out.println("\nWelcome to the crossword puzzle game. Please enter your username.");
                 username = scanner.nextLine();
-                loginResult = server.checkValidUser(username);
+                loginResult = server.checkValidUser(username, sequence);
+                if(duplicator.nextBoolean()){
+                    loginResult = server.checkValidUser(username, sequence);
+
+
+
+                }
+                sequence++;
+
                 break;
             } catch (RemoteException e) {
                 System.out.println(e.getMessage());
@@ -123,13 +159,22 @@ public class Client {
                 // Save and exit if user input is "*Exit*""
                 if (input.equals(Constants.EXIT_CODE)) {
                     userData.getGameState().setState(Constants.IDLE_STATE);
-                    server.saveGame(userData);
+                    server.saveGame(userData, sequence);
                     break;
                 }
 
                 // Process user input, and proceed to gameplay menu if appropriate (command is
                 // New Game or Continue)
-                userData = server.processUserInput(userData, input);
+                userData = server.processUserInput(userData, input, sequence);
+                if(duplicator.nextBoolean()){
+                    userData = server.processUserInput(userData, input, sequence);
+
+
+
+                }
+
+                sequence++;
+
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
                     userData = playGame(server, userData);
                 }
@@ -179,16 +224,41 @@ public class Client {
                     System.out.println("\nInvalid guess: " + input + ". Try again.");
                     continue;
                 } else if (input.toCharArray()[0] == '?') {
-                    System.out.println(server.processWordQuery(userData, input.substring(1)));
+                    System.out.println(server.processWordQuery(userData, input.substring(1), sequence));
+                    if(duplicator.nextBoolean()){
+                        System.out.println(server.processWordQuery(userData, input.substring(1), sequence));
+
+
+
+                    }
+
+                    sequence++;
+
                     continue;
                 } else {
                     synchronized (server) {
                         if (userData.getGameState().checkUniqueGuess(input)) {
-                            activeGameData = server.processPuzzleGuess(userData, input);
+                            activeGameData = server.processPuzzleGuess(userData, input, sequence);
+
+                            if(duplicator.nextBoolean()){
+                                activeGameData = server.processPuzzleGuess(userData, input, sequence);
+
+
+
+                            }
+                            sequence++;
+
                             userData = activeGameData.getUserData();
                             System.out.println(activeGameData.getMessage());
                             activeGameData.setMessage("");
-                            server.saveGame(userData);
+                            server.saveGame(userData, sequence);
+
+                            if(duplicator.nextBoolean()){
+                                server.saveGame(userData, sequence);
+
+
+
+                            }
                         } else {
                             System.out.println("Already guessed that!");
                         }
@@ -207,7 +277,14 @@ public class Client {
                 userData.getGameState().resetPuzzle();
             }
 
-            server.saveGame(userData);
+            server.saveGame(userData, sequence);
+
+            if(duplicator.nextBoolean()){
+                server.saveGame(userData, sequence);
+
+
+
+            }
         } catch (RemoteException e) {
             handleError(server, userData, e);
         }
@@ -227,10 +304,20 @@ public class Client {
         System.out.println("\nError: " + (e.getMessage()));
         try {
             userData.getGameState().setState(Constants.IDLE_STATE);
-            server.saveGame(userData);
+            server.saveGame(userData, sequence);
+
+            if(duplicator.nextBoolean()){
+                server.saveGame(userData, sequence);
+
+
+
+            }
         } catch (IOException saveError) {
             if (!e.getMessage().equals(Constants.COULD_NOT_SAVE))
                 System.out.println(Constants.COULD_NOT_SAVE);
         }
     }
+
+
+
 }

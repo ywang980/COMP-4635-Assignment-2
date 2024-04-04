@@ -58,8 +58,10 @@ public class GameState implements Serializable {
             String guessesData = lines[3].split(";")[1];
             this.guesses = new String[this.words.length * 2];
             String[] currentGuesses = guessesData.split(",");
-            for (int i = 0; i < currentGuesses.length; i++) {
-                this.guesses[i] = currentGuesses[i];
+            if (currentGuesses.length > 0) {
+                for (int i = 0; i < currentGuesses.length; i++) {
+                    this.guesses[i] = currentGuesses[i];
+                }
             }
 
             StringBuilder puzzleData = new StringBuilder();

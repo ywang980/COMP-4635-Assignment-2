@@ -15,7 +15,7 @@ public class Server {
      */
     public static void main(String args[]) {
         try {
-            ServerInterfaceImpl serverObject = new ServerInterfaceImpl();
+            ServerFactoryImp serverObject = new ServerFactoryImp();
             Registry registry = LocateRegistry.createRegistry(Constants.GAME_SERVER_PORT);
             registry.rebind("Server", serverObject);
             System.out.println("Listening for incoming requests...");

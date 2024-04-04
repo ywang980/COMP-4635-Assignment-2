@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="lib1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/lib/sqlite-jdbc-3.45.1.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/lib/jdbc-api-1.4.jar!/" />
-      <root url="jar://$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/lib/commons-csv-1.10.0-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/lib/slf4j-api-1.7.36.jar!/" />
-      <root url="jar://$PROJECT_DIR$/DatabaseServer/out/production/DatabaseServer/DatabaseServer/lib/commons-csv-1.10.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DatabaseServer/lib/commons-csv-1.10.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DatabaseServer/lib/commons-csv-1.10.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DatabaseServer/lib/jdbc-api-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DatabaseServer/lib/slf4j-api-1.7.36.jar!/" />
+      <root url="jar://$PROJECT_DIR$/DatabaseServer/lib/sqlite-jdbc-3.45.1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
