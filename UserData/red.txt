@@ -1,0 +1,11 @@
+Username;red
+Score;0
+State;Idle
+Attempts;6
+Words;an,oligarchy,fundraise
+Guesses;
+....---------.....+
+......---------...+
+$
+....oligarchy.....+
+......fundraise...+

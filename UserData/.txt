@@ -1,0 +1,13 @@
+Username;
+Score;0
+State;Play
+Attempts;8
+Words;guy,hangover,malnutrition,mortify
+Guesses;
+.........--------........+
+........------------.....+
+......-------............+
+$
+.........hangover........+
+........malnutrition.....+
+......mortify............+

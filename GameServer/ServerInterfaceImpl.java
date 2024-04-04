@@ -1,6 +1,5 @@
 package GameServer;
 
-import java.net.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import UserAccountServer.UserAccountService;
 import UserAccountServer.UserData;
@@ -25,14 +25,20 @@ import DatabaseServer.Database;
 public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerInterface {
 
     private static Database database;
+    private ConcurrentHashMap<Integer, Object> idempotancyMap = new ConcurrentHashMap<>();
+
+    private static int sequence;
 
     /**
      * Constructs a ServerInterfaceImpl object.
      *
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public ServerInterfaceImpl() throws RemoteException {
+    public ServerInterfaceImpl(int seq) throws RemoteException {
         super();
+
+        sequence=seq;
+
 
         try {
             connectToDatabase();
@@ -71,7 +77,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      *         - 0 if the user is already logged in.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public int checkValidUser(String username) throws RemoteException {
+    public int checkValidUser(String username, int seq) throws RemoteException {
+
+        if(!idempotancyMap.containsKey(seq)){
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
@@ -80,9 +88,17 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             if (loginResult == 0) {
                 throw new RemoteException(Constants.DUPLICATE_LOGIN);
             } else
+                idempotancyMap.put(seq, loginResult);
                 return loginResult;
+
+
         } catch (Exception e) {
             throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
+        }}
+
+        else{
+
+            return (int) idempotancyMap.get(seq);
         }
     }
 
@@ -93,26 +109,36 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @return - The UserData associated with the specified username.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public UserData validateUserData(String username) throws RemoteException {
+    public UserData validateUserData(String username, int seq) throws RemoteException {
+
+        if(!idempotancyMap.containsKey(seq)){
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
             String userDataString = userAccountService.load(username);
-            return new UserData(userDataString);
+            UserData userData=new UserData(userDataString);
+            idempotancyMap.put(seq, userData);
+            return userData;
+
 
         } catch (Exception e) {
             throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
+        }}
+        else{
+            return (UserData) idempotancyMap.get(seq);
         }
+
     }
 
     /**
      * Saves game data associated with the specified UserData.
      *
      * @param userData - The UserData containing the game data to save.
+     * @param sequence
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    public void saveGame(UserData userData) throws RemoteException {
+    public void saveGame(UserData userData, int sequence) throws RemoteException {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
@@ -133,7 +159,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         logging out the user.
      */
-    public void logoutUser(String username) throws RemoteException {
+    public void logoutUser(String username, int seq) throws RemoteException {
+
+
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
@@ -145,6 +173,8 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         } catch (Exception e) {
             throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
         }
+
+
     }
 
     /**
@@ -177,8 +207,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the input.
      */
-    public UserData processUserInput(UserData userData, String input)
+    public UserData processUserInput(UserData userData, String input, int seq)
             throws RemoteException {
+
+        if(!idempotancyMap.containsKey(seq)){
         String[] tokenizedInput = input.split(";");
         if (tokenizedInput.length <= 1)
             throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
@@ -187,8 +219,10 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         String argument = tokenizedInput[1];
 
         processCommand(userData, command, argument);
-        saveGame(userData);
-        return userData;
+        saveGame(userData, sequence);
+        return userData;}
+
+        else return (UserData) idempotancyMap.get(seq);
     }
 
     /**
@@ -204,7 +238,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @param argument - The argument associated with the command.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    private static void processCommand(UserData userData, String command, String argument)
+    private  void processCommand(UserData userData, String command, String argument)
             throws RemoteException {
         switch (command) {
             // Add word to database
@@ -270,7 +304,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication
      *                         while attempting to generate the new game.
      */
-    private static void processNewGame(UserData userData, String argument)
+    private void processNewGame(UserData userData, String argument)
             throws RemoteException {
         try {
             int wordCount = Integer.parseInt(argument.strip());
@@ -319,7 +353,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    private static void createNewGame(UserData userData, int wordCount)
+    private  void createNewGame(UserData userData, int wordCount)
             throws RemoteException {
         String words[] = generateWordList(wordCount);
 
@@ -328,7 +362,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
         int attempts = Math.min(words.length * 2, Constants.MAX_WORD_COUNT);
 
         userData.setGameState(new GameState(attempts, words));
-        new ServerInterfaceImpl().saveGame(userData);
+        saveGame(userData, sequence);
     }
 
     /**
@@ -465,32 +499,36 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the query.
      */
-    public String processWordQuery(UserData userData, String input) throws RemoteException {
-        boolean found = false;
+    public String processWordQuery(UserData userData, String input, int seq) throws RemoteException {
 
-        // Check if input in database first
-        try {
-            found = database.checkWord(input);
-        } catch (RemoteException | SQLException e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS);
-        }
+        if (!idempotancyMap.containsKey(seq)) {
+            boolean found = false;
 
-        if (found)
-            return "\nThe word: " + input + " is in the database.";
-
-        // Check if input in word list used to construct puzzle, in case of
-        // unfortunate delete timing (i.e., user created a game with a specific
-        // word, but then another user deleted said word after)
-
-        String[] words = userData.getGameState().getWords();
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equals(input)) {
-                return "\nThe word: " + input + " is in the database.";
+            // Check if input in database first
+            try {
+                found = database.checkWord(input);
+            } catch (RemoteException | SQLException e) {
+                throw new RemoteException(Constants.CANT_COMMUNICATE_WDBS);
             }
-        }
 
-        return "\nThe word: " + input + " is not in the database.";
-    }
+            if (found)
+                return "\nThe word: " + input + " is in the database.";
+
+            // Check if input in word list used to construct puzzle, in case of
+            // unfortunate delete timing (i.e., user created a game with a specific
+            // word, but then another user deleted said word after)
+
+            String[] words = userData.getGameState().getWords();
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].equals(input)) {
+                    return "\nThe word: " + input + " is in the database.";
+                }
+            }
+
+            return "\nThe word: " + input + " is not in the database.";}
+
+        return (String) idempotancyMap.get(seq);
+        }
 
     /**
      * Processes a user's guess for the puzzle.
@@ -502,7 +540,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the guess.
      */
-    public ActiveGameData processPuzzleGuess(UserData userData, String input) throws RemoteException {
+    public ActiveGameData processPuzzleGuess(UserData userData, String input, int seq) throws RemoteException {
+
+        if(!idempotancyMap.containsKey(seq)){
         String message = "";
         GameState gameState = userData.getGameState();
         gameState.appendNewGuess(input);
@@ -520,15 +560,20 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             gameState.setState(Constants.IDLE_STATE);
             message += "\nYou win!";
             userData.incrementScore();
+            sequence++;
             return new ActiveGameData(userData, false, message);
+
         }
 
         // Check defeat condition
         if (gameState.getAttempts() == 0) {
             gameState.setState(Constants.IDLE_STATE);
             message += "\nYou lose!";
+            sequence++;
             return new ActiveGameData(userData, false, message);
         }
         return new ActiveGameData(userData, true, message);
+    }
+        return (ActiveGameData) idempotancyMap.get(seq);
     }
 }

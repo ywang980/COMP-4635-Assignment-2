@@ -5,13 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="added in heartbeat monitor. Tested and working + comments">
+      <change afterPath="$PROJECT_DIR$/GameServer/ServerFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GameServer/ServerFactoryImp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/UserData/test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Communication_Protocol_Design (3).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -20,6 +34,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Client/Client.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="2dQusP8DMXXyIxfQImgRt9MVJGK" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -35,7 +52,8 @@
     "Application.DatabaseServer.executor": "Run",
     "Application.Server.executor": "Run",
     "Application.UserAccountServer.executor": "Run",
-    "git-widget-placeholder": "main"
+    "git-widget-placeholder": "main",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -116,8 +134,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Client" />
-        <item itemvalue="Application.UserAccountServer" />
         <item itemvalue="Application.Server" />
+        <item itemvalue="Application.UserAccountServer" />
         <item itemvalue="Application.DatabaseServer" />
       </list>
     </recent_temporary>

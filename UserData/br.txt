@@ -1,0 +1,13 @@
+Username;br
+Score;0
+State;Play
+Attempts;8
+Words;sky,steamy,pokerface,hawley
+Guesses;
+........------....+
+......---------...+
+...------.........+
+$
+........steamy....+
+......pokerface...+
+...hawley.........+

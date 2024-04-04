@@ -21,7 +21,7 @@ public interface ServerInterface extends Remote {
      *         - 0 if the user is already logged in.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    int checkValidUser(String username) throws RemoteException;
+    int checkValidUser(String username, int sequence) throws RemoteException;
 
     /**
      * Fetches and validates user data associated with the specified username.
@@ -30,16 +30,17 @@ public interface ServerInterface extends Remote {
      * @return - The UserData associated with the specified username.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    UserData validateUserData(String username) throws RemoteException;
+    UserData validateUserData(String username, int sequence) throws RemoteException;
 
     /**
      * Saves game data associated with the specified UserData.
      *
      * @param userData - The UserData containing the game data to save.
+     * @param sequence
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    void saveGame(UserData userData) throws RemoteException;
+    void saveGame(UserData userData, int sequence) throws RemoteException;
 
     /**
      * Logs out the specified user.
@@ -48,7 +49,7 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         logging out the user.
      */
-    void logoutUser(String username) throws RemoteException;
+    void logoutUser(String username, int sequence) throws RemoteException;
 
     /**
      * Validates the heartbeat signal for the specified user with the User Account Server (UAS).
@@ -72,7 +73,7 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the input.
      */
-    UserData processUserInput(UserData userData, String input) throws RemoteException;
+    UserData processUserInput(UserData userData, String input, int sequence) throws RemoteException;
 
     /**
      * Processes a word query to check if the word is in the database or the puzzle
@@ -85,7 +86,7 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the query.
      */
-    String processWordQuery(UserData userData, String input) throws RemoteException;
+    String processWordQuery(UserData userData, String input, int sequence) throws RemoteException;
 
     /**
      * Processes a user's guess for the puzzle.
@@ -97,5 +98,5 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the guess.
      */
-    ActiveGameData processPuzzleGuess(UserData userData, String input) throws RemoteException;
+    ActiveGameData processPuzzleGuess(UserData userData, String input, int sequence) throws RemoteException;
 }
