@@ -113,6 +113,11 @@ public class GameState implements Serializable {
         return this.words;
     }
 
+    /**
+     * Generates a string listing all the guesses made by the player.
+     *
+     * @return A string containing all the guesses separated by commas.
+     */
     public String listGuesses() {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -125,6 +130,12 @@ public class GameState implements Serializable {
         return stringBuilder.toString();
     }
 
+    /**
+     * Checks if a given guess is unique, i.e., not already made by the player.
+     *
+     * @param guess The guess to be checked for uniqueness.
+     * @return true if the guess is unique, false otherwise.
+     */
     public boolean checkUniqueGuess(String guess) {
         for (int i = 0; i < this.guesses.length && this.guesses[i] != null; i++) {
             if (guess.equals(this.guesses[i])) {
@@ -134,6 +145,11 @@ public class GameState implements Serializable {
         return true;
     }
 
+    /**
+     * Appends a new guess to the list of guesses made by the player.
+     *
+     * @param guess The new guess to be added to the list.
+     */
     public void appendNewGuess(String guess) {
         int i = 0;
 

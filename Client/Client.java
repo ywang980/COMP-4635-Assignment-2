@@ -128,6 +128,8 @@ public class Client {
      * 
      * If string is 1 character, it is interpreted as a letter guess.
      * If string is 2+ characters, it is interpreted as a word guess.
+     * A guess is only processed if it's heretofore unique for the current game.
+     * 
      * If string begins with a '?', it is interpreted as a database query.
      * 
      * @param server   - The ServerInterface object for server communication.
@@ -158,14 +160,7 @@ public class Client {
                     System.out.println(server.processWordQuery(userData, input.substring(1)));
                     continue;
                 } else {
-                    if (userData.getGameState().checkUniqueGuess(input)) {
-                        activeGameData = server.processPuzzleGuess(userData, input);
-                        userData = activeGameData.getUserData();
-                        System.out.println(activeGameData.getMessage());
-                        activeGameData.setMessage("");
-                        server.saveGame(userData);
-                    } else
-                        System.out.println("Already guessed that!");
+                    processGuessSync(server, activeGameData, userData, input);
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);
@@ -185,6 +180,23 @@ public class Client {
             handleError(server, userData, e);
         }
         return userData;
+    }
+
+    /**
+     * Synchronously processes a user's guess in the game, ensuring de-duplication
+     * of puzzle processing.
+     */
+    public static synchronized void processGuessSync(ServerInterface server, ActiveGameData activeGameData,
+            UserData userData, String input) throws RemoteException {
+        if (userData.getGameState().checkUniqueGuess(input)) {
+            activeGameData = server.processPuzzleGuess(userData, input);
+            userData = activeGameData.getUserData();
+            System.out.println(activeGameData.getMessage());
+            activeGameData.setMessage("");
+            server.saveGame(userData);
+        } else {
+            System.out.println("Already guessed that!");
+        }
     }
 
     /**
