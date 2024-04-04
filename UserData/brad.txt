@@ -1,0 +1,11 @@
+Username;brad
+Score;0
+State;Idle
+Attempts;6
+Words;ga,pittsburgh,dovetail
+Guesses;
+..----------.........+
+.....--------........+
+$
+..pittsburgh.........+
+.....dovetail........+
