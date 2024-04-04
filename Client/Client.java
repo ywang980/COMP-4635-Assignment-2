@@ -42,7 +42,7 @@ public class Client {
                 System.out.println("Connection successfully closed.");
             }
         } catch (Exception e) {
-            // System.out.println("Exception: " + e.getMessage());
+            System.out.println("Exception: " + e.getMessage());
             System.out.println("Connection error. Process will now terminate.");
         }
     }
