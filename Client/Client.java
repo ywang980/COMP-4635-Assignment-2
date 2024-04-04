@@ -52,14 +52,15 @@ public class Client {
 
     /**
      * Continuously sends heartbeat signals to the server for the specified user.
-     * This method runs indefinitely, periodically sending heartbeat signals to the server
+     * This method runs indefinitely, periodically sending heartbeat signals to the
+     * server
      * to indicate that the specified user is still active.
      *
      * @param server   The ServerInterface to which the heartbeat signals are sent.
      * @param username The username of the user for whom heartbeat signals are sent.
      */
     private static void heartbeat(ServerInterface server, String username) {
-        while(true) {
+        while (true) {
             try {
                 server.validateHeartbeat(username);
                 Thread.sleep(5000);
@@ -181,7 +182,17 @@ public class Client {
                     System.out.println(server.processWordQuery(userData, input.substring(1)));
                     continue;
                 } else {
-                    processGuessSync(server, activeGameData, userData, input);
+                    synchronized (server) {
+                        if (userData.getGameState().checkUniqueGuess(input)) {
+                            activeGameData = server.processPuzzleGuess(userData, input);
+                            userData = activeGameData.getUserData();
+                            System.out.println(activeGameData.getMessage());
+                            activeGameData.setMessage("");
+                            server.saveGame(userData);
+                        } else {
+                            System.out.println("Already guessed that!");
+                        }
+                    }
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);
@@ -203,22 +214,6 @@ public class Client {
         return userData;
     }
 
-    /**
-     * Synchronously processes a user's guess in the game, ensuring de-duplication
-     * of puzzle processing.
-     */
-    public static synchronized void processGuessSync(ServerInterface server, ActiveGameData activeGameData,
-            UserData userData, String input) throws RemoteException {
-        if (userData.getGameState().checkUniqueGuess(input)) {
-            activeGameData = server.processPuzzleGuess(userData, input);
-            userData = activeGameData.getUserData();
-            System.out.println(activeGameData.getMessage());
-            activeGameData.setMessage("");
-            server.saveGame(userData);
-        } else {
-            System.out.println("Already guessed that!");
-        }
-    }
 
     /**
      * Handles errors that occur during client-server communication.
