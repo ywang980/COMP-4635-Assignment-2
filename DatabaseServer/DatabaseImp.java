@@ -27,8 +27,7 @@ public class DatabaseImp extends UnicastRemoteObject implements Database {
     private void establishDatabase() throws SQLException {
         try {
             c = DriverManager.getConnection("jdbc:sqlite:./DatabaseServer/data/wordDatabase.db");
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

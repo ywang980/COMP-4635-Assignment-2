@@ -4,7 +4,6 @@ import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import GameServer.Constants;
@@ -111,12 +110,11 @@ public class Client {
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
                     userData = playGame(server, userData);
                 }
-            } catch (RuntimeException e) {
-             e.getMessage();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                handleError(server, userData, e);
+                if (e.getMessage().contains("Connection refused")) {
+                    break;
+                }
             }
         } while (true);
     }
@@ -155,14 +153,7 @@ public class Client {
                     System.out.println("\nInvalid guess: " + input + ". Try again.");
                     continue;
                 } else if (input.toCharArray()[0] == '?') {
-
-                    try{
-                    System.out.println(server.processWordQuery(userData, input.substring(1)));}
-
-                    catch (RuntimeException e){
-
-                        System.out.println("Database offline");
-                    }
+                    System.out.println(server.processWordQuery(userData, input.substring(1)));
                     continue;
                 } else {
                     activeGameData = server.processPuzzleGuess(userData, input);
@@ -175,8 +166,6 @@ public class Client {
                 if (e.getMessage().contains("Connection refused")) {
                     break;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         }
 

@@ -16,7 +16,7 @@ public class Server {
     public static void main(String args[]) {
         try {
             ServerInterfaceImpl serverObject = new ServerInterfaceImpl();
-            Registry registry = LocateRegistry.createRegistry(Constants.DEFAULT_RMI_PORT);
+            Registry registry = LocateRegistry.createRegistry(Constants.GAME_SERVER_PORT);
             registry.rebind("Server", serverObject);
             System.out.println("Listening for incoming requests...");
         } catch (Exception e) {

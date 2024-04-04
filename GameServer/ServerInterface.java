@@ -2,7 +2,6 @@ package GameServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 
 import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
@@ -63,7 +62,7 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the input.
      */
-    UserData processUserInput(UserData userData, String input) throws RemoteException, SQLException;
+    UserData processUserInput(UserData userData, String input) throws RemoteException;
 
     /**
      * Processes a word query to check if the word is in the database or the puzzle
@@ -76,7 +75,7 @@ public interface ServerInterface extends Remote {
      * @throws RemoteException - if there is an issue with remote communication or
      *                         processing the query.
      */
-    String processWordQuery(UserData userData, String input) throws RemoteException, SQLException;
+    String processWordQuery(UserData userData, String input) throws RemoteException;
 
     /**
      * Processes a user's guess for the puzzle.

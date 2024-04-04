@@ -20,7 +20,6 @@ public class DatabaseServer {
             System.out.println("RMI server is running...");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
         }
     }
 }
