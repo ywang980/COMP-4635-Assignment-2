@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="">
+    <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="added in heartbeat monitor. Tested and working + comments">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +43,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "Kellen-Branch",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
+    "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -154,13 +150,22 @@
       <option name="project" value="LOCAL" />
       <updated>1712194398571</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added in heartbeat monitor. Tested and working + comments">
+      <option name="closed" value="true" />
+      <created>1712201756303</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1712201756303</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="added in heartbeat monitor. Tested and working + comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="added in heartbeat monitor. Tested and working + comments" />
   </component>
 </project>
