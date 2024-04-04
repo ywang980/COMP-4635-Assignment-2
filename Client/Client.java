@@ -7,6 +7,7 @@ import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 import GameServer.Constants;
+import GameServer.Server;
 import GameServer.ServerInterface;
 import UserAccountServer.UserData;
 import UserAccountServer.ActiveGameData;
@@ -160,6 +161,7 @@ public class Client {
                     userData = activeGameData.getUserData();
                     System.out.println(activeGameData.getMessage());
                     activeGameData.setMessage("");
+                    server.saveGame(userData);
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);

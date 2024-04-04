@@ -1,0 +1,14 @@
+Username;test
+Score;0
+State;Play
+Attempts;9
+Words;soul,  eastman,  mournful,  saltbush,  bulgaria
+......eastman....+
+.......--------..+
+...--------......+
+......--------...+
+$
+......eastman....+
+.......mournful..+
+...saltbush......+
+......bulgaria...+
