@@ -143,6 +143,7 @@ public class Client {
             System.out.print("\n" + userData.getGameState().getPuzzle().getPuzzleString());
             System.out.println(Constants.GAME_MENU);
             System.out.println("Attempts remaining: " + userData.getGameState().getAttempts());
+            System.out.println("Previous guesses: " + userData.getGameState().listGuesses());
 
             input = scanner.nextLine();
 
@@ -157,11 +158,14 @@ public class Client {
                     System.out.println(server.processWordQuery(userData, input.substring(1)));
                     continue;
                 } else {
-                    activeGameData = server.processPuzzleGuess(userData, input);
-                    userData = activeGameData.getUserData();
-                    System.out.println(activeGameData.getMessage());
-                    activeGameData.setMessage("");
-                    server.saveGame(userData);
+                    if (userData.getGameState().checkUniqueGuess(input)) {
+                        activeGameData = server.processPuzzleGuess(userData, input);
+                        userData = activeGameData.getUserData();
+                        System.out.println(activeGameData.getMessage());
+                        activeGameData.setMessage("");
+                        server.saveGame(userData);
+                    } else
+                        System.out.println("Already guessed that!");
                 }
             } catch (RemoteException e) {
                 handleError(server, userData, e);

@@ -262,8 +262,6 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
 
             createNewGame(userData, wordCount);
             userData.getGameState().setState(Constants.PLAY_STATE);
-        } catch (RemoteException e) {
-            reconnectDatabase(e);
         } catch (NumberFormatException e) {
             throw new RemoteException(Constants.INVALID_WORD_COUNT);
         }
@@ -351,6 +349,9 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      *                         fetching the stem.
      */
     private static String fetchStem(int minimumLength) throws RemoteException {
+        if (minimumLength == 1)
+            minimumLength++;
+
         try {
             return database.randomWordLength(minimumLength);
         } catch (RemoteException | SQLException e) {
@@ -486,6 +487,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     public ActiveGameData processPuzzleGuess(UserData userData, String input) throws RemoteException {
         String message = "";
         GameState gameState = userData.getGameState();
+        gameState.appendNewGuess(input);
 
         boolean successfulGuess = gameState.getPuzzle().updatePuzzleGrid(input);
         gameState.decrementAttempts();

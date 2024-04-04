@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserData/test.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserAccountServer/GameState.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/GameState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/UserData/test.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,9 +25,6 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
-}</component>
   <component name="ProjectId" id="2dQusP8DMXXyIxfQImgRt9MVJGK" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -34,25 +33,10 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Client.executor": "Run",
-    "Application.DatabaseServer.executor": "Run",
-    "Application.Server.executor": "Run",
-    "Application.UserAccountServer.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "openjdk-21",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="GameServer" />
@@ -111,6 +95,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Server" />
       <item itemvalue="Application.UserAccountServer" />
@@ -135,6 +130,7 @@
       <option name="presentableId" value="Default" />
       <updated>1709952829333</updated>
       <workItem from="1709952830311" duration="14151000" />
+      <workItem from="1712198224476" duration="3536000" />
     </task>
     <task id="LOCAL-00001" summary="made it synchronized again">
       <option name="closed" value="true" />

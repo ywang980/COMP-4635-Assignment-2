@@ -11,6 +11,7 @@ public class GameState implements Serializable {
     private String state;
     private int attempts;
     private String[] words;
+    private String[] guesses;
     private Puzzle puzzle;
 
     /**
@@ -31,6 +32,7 @@ public class GameState implements Serializable {
         this.state = Constants.PLAY_STATE;
         this.attempts = attempts;
         this.words = words;
+        this.guesses = new String[this.words.length * 2];
         this.puzzle = new Puzzle(this.words);
     }
 
@@ -49,11 +51,19 @@ public class GameState implements Serializable {
             this.puzzle = null;
         } else {
             this.attempts = Integer.parseInt(lines[1].split(";")[1]);
+
             String wordsData = lines[2].split(";")[1];
             this.words = wordsData.split(",");
 
+            String guessesData = lines[3].split(";")[1];
+            this.guesses = new String[this.words.length * 2];
+            String[] currentGuesses = guessesData.split(",");
+            for (int i = 0; i < currentGuesses.length; i++) {
+                this.guesses[i] = currentGuesses[i];
+            }
+
             StringBuilder puzzleData = new StringBuilder();
-            for (int i = 3; i < lines.length; i++) {
+            for (int i = 4; i < lines.length; i++) {
                 puzzleData.append(lines[i]).append("\n");
             }
             this.puzzle = new Puzzle(this.words[0], puzzleData.toString());
@@ -103,6 +113,36 @@ public class GameState implements Serializable {
         return this.words;
     }
 
+    public String listGuesses() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; this.guesses[i] != null; i++) {
+            stringBuilder.append(this.guesses[i]);
+            if (i < this.guesses.length - 1 && this.guesses[i + 1] != null) {
+                stringBuilder.append(", ");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public boolean checkUniqueGuess(String guess) {
+        for (int i = 0; i < this.guesses.length && this.guesses[i] != null; i++) {
+            if (guess.equals(this.guesses[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void appendNewGuess(String guess) {
+        int i = 0;
+
+        for (; this.guesses[i] != null; i++)
+            ;
+
+        this.guesses[i] = guess;
+    }
+
     /**
      * Gets the puzzle.
      * 
@@ -135,8 +175,19 @@ public class GameState implements Serializable {
             stringBuilder.append("Words;");
             for (int i = 0; i < this.words.length; i++) {
                 stringBuilder.append(this.words[i]);
-                if (i < words.length - 1) {
-                    stringBuilder.append(", ");
+                if (i < this.words.length - 1) {
+                    stringBuilder.append(",");
+                }
+            }
+
+            stringBuilder.append("\nGuesses;");
+            for (int i = 0; i < this.guesses.length; i++) {
+                if (this.guesses[i] == null)
+                    break;
+
+                stringBuilder.append(this.guesses[i]);
+                if (i < this.guesses.length - 1 && this.guesses[i + 1] != null) {
+                    stringBuilder.append(",");
                 }
             }
 
