@@ -52,4 +52,13 @@ public interface UserAccountService extends Remote {
      * @throws RemoteException - if there is an issue with remote communication.
      */
     int save(String username, String data) throws RemoteException;
+
+    /**
+     * Validates the heartbeat signal for the specified user and updates the heartbeat status in the internal map.
+     * This method marks the heartbeat signal as received for the specified user in the internal map of logged-in users.
+     *
+     * @param username The username of the user for whom the heartbeat signal is validated.
+     * @throws RemoteException If an error occurs during the validation process.
+     */
+    void validateHeartbeat(String username) throws RemoteException;
 }

@@ -15,7 +15,7 @@ import GameServer.Constants;
 public class UserAccountServer extends UnicastRemoteObject implements UserAccountService {
 
     private static List<String> userAccounts;
-    private static Set<String> loggedInUsers;
+    private static Map<String, Boolean> loggedInUsers;
 
     /**
      * The main method is the entry point of the UserAccountServer application.
@@ -50,7 +50,9 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
     public UserAccountServer() throws RemoteException {
         super();
         loadUserAccounts();
-        loggedInUsers = new HashSet<>();
+        loggedInUsers = new HashMap<>();
+        Thread heartbeatMonitorThread = new Thread(this::heartbeatMonitor);
+        heartbeatMonitorThread.start();
     }
 
     /**
@@ -83,11 +85,11 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @throws RemoteException - if there is an issue with remote communication.
      */
     public synchronized int login(String username) throws RemoteException {
-        if (userAccounts.contains((username.trim())) && !loggedInUsers.contains(username.trim())) {
-            loggedInUsers.add(username);
+        if (userAccounts.contains((username.trim())) && !loggedInUsers.containsKey(username.trim())) {
+            loggedInUsers.put(username, true);
             return 1;
-        } else if (!userAccounts.contains(username.trim()) && !loggedInUsers.contains(username.trim())) {
-            loggedInUsers.add(username);
+        } else if (!userAccounts.contains(username.trim()) && !loggedInUsers.containsKey(username.trim())) {
+            loggedInUsers.put(username, true);
             userAccounts.add(username);
             return 2;
         } else {
@@ -104,7 +106,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @throws RemoteException - if there is an issue with remote communication.
      */
     public synchronized int logout(String username) throws RemoteException {
-        if (loggedInUsers.contains(username.trim())) {
+        if (loggedInUsers.containsKey(username.trim())) {
             loggedInUsers.remove(username.trim());
             return 1;
         } else {
@@ -167,6 +169,54 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    /**
+     * Validates the heartbeat signal for the specified user and updates the heartbeat status in the internal map.
+     * This method marks the heartbeat signal as received for the specified user in the internal map of logged-in users.
+     *
+     * @param username The username of the user for whom the heartbeat signal is validated.
+     * @throws RemoteException If an error occurs during the validation process.
+     */
+    public synchronized void validateHeartbeat(String username) throws RemoteException {
+        try {
+            if (loggedInUsers.containsKey(username)) {
+                loggedInUsers.put(username, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Monitors the heartbeat status of logged-in users and removes users with lost heartbeat signals.
+     * This method continuously monitors the heartbeat status of logged-in users and removes
+     * users with lost heartbeat signals from the internal map of logged-in users.
+     */
+    private void heartbeatMonitor() {
+        while(true) {
+            try {
+                Thread.sleep(6000);
+
+                synchronized (loggedInUsers) {
+                    Iterator<Map.Entry<String, Boolean>> iterator = loggedInUsers.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, Boolean> entry = iterator.next();
+                        String username = entry.getKey();
+                        Boolean heartbeatReceived = entry.getValue();
+
+                        if (!heartbeatReceived) {
+                            iterator.remove();
+                            System.out.println("User '" + username + "' removed due to loss of signal.");
+                        } else {
+                            loggedInUsers.put(username, false);
+                        }
+                    }
+                }
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
         }
     }
 }

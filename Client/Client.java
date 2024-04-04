@@ -32,6 +32,8 @@ public class Client {
                 UserData userData = server.validateUserData(username);
                 if (userData != null) {
                     System.out.println("Client: '" + userData.getUsername() + "' connected.");
+                    Thread heartbeatThread = new Thread(() -> heartbeat(server, username));
+                    heartbeatThread.start();
                     serveUser(server, userData);
                 }
             } catch (RemoteException e) {
@@ -45,6 +47,25 @@ public class Client {
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Connection error. Process will now terminate.");
+        }
+    }
+
+    /**
+     * Continuously sends heartbeat signals to the server for the specified user.
+     * This method runs indefinitely, periodically sending heartbeat signals to the server
+     * to indicate that the specified user is still active.
+     *
+     * @param server   The ServerInterface to which the heartbeat signals are sent.
+     * @param username The username of the user for whom heartbeat signals are sent.
+     */
+    private static void heartbeat(ServerInterface server, String username) {
+        while(true) {
+            try {
+                server.validateHeartbeat(username);
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UserData/test.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +46,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Kellen-Branch",
     "jdk.selected.JAVA_MODULE": "openjdk-21",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -59,7 +61,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Client">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Client" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.Client" />
       <module name="COMP-4635-Assignment-2" />
       <extension name="coverage">

@@ -51,6 +51,16 @@ public interface ServerInterface extends Remote {
     void logoutUser(String username) throws RemoteException;
 
     /**
+     * Validates the heartbeat signal for the specified user with the User Account Server (UAS).
+     * This method sends a heartbeat signal to the UAS for the specified user to indicate
+     * the continued activity of the user.
+     *
+     * @param username The username of the user for whom the heartbeat signal is validated.
+     * @throws RemoteException If an error occurs during remote communication with the UAS.
+     */
+    void validateHeartbeat(String username) throws RemoteException;
+
+    /**
      * Processes user input and performs actions based on the input.
      *
      * Details: user input interpreted as command-argument 2-tuple,
