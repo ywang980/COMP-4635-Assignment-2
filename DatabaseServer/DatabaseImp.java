@@ -103,7 +103,8 @@ public class DatabaseImp extends UnicastRemoteObject implements Database {
      *         such word is found.
      */
     public String randomWordLength(int a) throws RemoteException, SQLException {
-        String sql = "SELECT word FROM word WHERE LENGTH(word) like '" + a + "' ORDER BY RANDOM() LIMIT 1;";
+        String sql = "SELECT word FROM word WHERE LENGTH(word) >= " + a + " ORDER BY RANDOM() LIMIT 1";
+
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()) {
