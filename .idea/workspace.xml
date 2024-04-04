@@ -6,27 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a0bed052-d406-4282-8bb9-4824f6aafcd1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DatabaseServer/data/wordDatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/data/wordDatabase.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/Aawd.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/Andy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/FE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/aef.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/awd.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/b.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/bl.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/efd.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/ewwf.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/Client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/Client/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseImp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseImp.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/DatabaseServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/data/wordDatabase.db" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/DatabaseServer/data/wordDatabase.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/GameServer/ServerInterfaceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/GameServer/ServerInterfaceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/UserData/b.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/COMP-4635-Assignment-2/UserData/b.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/UserAccountServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,10 +16,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2dQusP8DMXXyIxfQImgRt9MVJGK" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -50,7 +33,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Kellen-Branch",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -90,6 +73,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.Client" />
+      <item itemvalue="Application.DatabaseServer" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.DatabaseServer" />
@@ -111,5 +98,8 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
 </project>

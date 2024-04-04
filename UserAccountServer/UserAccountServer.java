@@ -82,7 +82,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      *         - 0 if the user is logged in.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public int login(String username) throws RemoteException {
+    public synchronized int login(String username) throws RemoteException {
         if (userAccounts.contains((username.trim())) && !loggedInUsers.contains(username.trim())) {
             loggedInUsers.add(username);
             return 1;
@@ -103,7 +103,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      *         - 0 if the user was not logged in.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public int logout(String username) throws RemoteException {
+    public synchronized int logout(String username) throws RemoteException {
         if (loggedInUsers.contains(username.trim())) {
             loggedInUsers.remove(username.trim());
             return 1;
@@ -122,7 +122,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      * @throws RemoteException - If an I/O error occurs while creating the file or
      *                         reading from it.
      */
-    public String load(String username) throws RemoteException {
+    public synchronized String load(String username) throws RemoteException {
         String filePath = Constants.USER_DATA_DIRECTORY + username + ".txt";
         File userDatafile = new File(filePath);
         try {
@@ -158,7 +158,7 @@ public class UserAccountServer extends UnicastRemoteObject implements UserAccoun
      *         - 0 if an error occurred while saving.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    public int save(String username, String data) throws RemoteException {
+    public synchronized int save(String username, String data) throws RemoteException {
         File userDataFile = new File(Constants.USER_DATA_DIRECTORY +
                 username + ".txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataFile))) {
