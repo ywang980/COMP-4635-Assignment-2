@@ -20,7 +20,8 @@ public class Client {
 
     private static Random duplicator = new Random();
 
-    private static int sequence=0;
+    private static int sequence = 0;
+
     /**
      * Main method to start the client.
      *
@@ -32,17 +33,15 @@ public class Client {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.GAME_SERVER_PORT);
             ServerFactory serverMaker = (ServerFactory) registry.lookup("Server");
-            ServerInterface server = (ServerInterface) serverMaker.createServer( sequence);
+            ServerInterface server = (ServerInterface) serverMaker.createServer(sequence);
             sequence++;
 
             String username = validateUserName(server);
-
             try {
                 UserData userData = server.validateUserData(username, sequence);
 
-                if(duplicator.nextBoolean()){
-                  userData = server.validateUserData(username, sequence);
-
+                if (duplicator.nextBoolean()) {
+                    userData = server.validateUserData(username, sequence);
                 }
                 userData = server.validateUserData(username, sequence);
                 sequence++;
@@ -57,17 +56,11 @@ public class Client {
                 System.out.println(e.getMessage());
             } finally {
                 if (username != null) {
-
-
                     server.logoutUser(username, sequence);
-
-                    if(duplicator.nextBoolean()){
+                    if (duplicator.nextBoolean()) {
                         server.logoutUser(username, sequence);
-
-
                     }
                     sequence++;
-
                 }
                 System.out.println("Connection successfully closed.");
                 System.exit(0);
@@ -114,12 +107,10 @@ public class Client {
             try {
                 System.out.println("\nWelcome to the crossword puzzle game. Please enter your username.");
                 username = scanner.nextLine();
+
                 loginResult = server.checkValidUser(username, sequence);
-                if(duplicator.nextBoolean()){
+                if (duplicator.nextBoolean()) {
                     loginResult = server.checkValidUser(username, sequence);
-
-
-
                 }
                 sequence++;
 
@@ -166,13 +157,9 @@ public class Client {
                 // Process user input, and proceed to gameplay menu if appropriate (command is
                 // New Game or Continue)
                 userData = server.processUserInput(userData, input, sequence);
-                if(duplicator.nextBoolean()){
+                if (duplicator.nextBoolean()) {
                     userData = server.processUserInput(userData, input, sequence);
-
-
-
                 }
-
                 sequence++;
 
                 if (userData.getGameState().getState().equals(Constants.PLAY_STATE)) {
@@ -225,13 +212,9 @@ public class Client {
                     continue;
                 } else if (input.toCharArray()[0] == '?') {
                     System.out.println(server.processWordQuery(userData, input.substring(1), sequence));
-                    if(duplicator.nextBoolean()){
+                    if (duplicator.nextBoolean()) {
                         System.out.println(server.processWordQuery(userData, input.substring(1), sequence));
-
-
-
                     }
-
                     sequence++;
 
                     continue;
@@ -239,25 +222,18 @@ public class Client {
                     synchronized (server) {
                         if (userData.getGameState().checkUniqueGuess(input)) {
                             activeGameData = server.processPuzzleGuess(userData, input, sequence);
-
-                            if(duplicator.nextBoolean()){
+                            if (duplicator.nextBoolean()) {
                                 activeGameData = server.processPuzzleGuess(userData, input, sequence);
-
-
-
                             }
                             sequence++;
 
                             userData = activeGameData.getUserData();
                             System.out.println(activeGameData.getMessage());
                             activeGameData.setMessage("");
+
                             server.saveGame(userData, sequence);
-
-                            if(duplicator.nextBoolean()){
+                            if (duplicator.nextBoolean()) {
                                 server.saveGame(userData, sequence);
-
-
-
                             }
                         } else {
                             System.out.println("Already guessed that!");
@@ -278,11 +254,8 @@ public class Client {
             }
 
             server.saveGame(userData, sequence);
-
-            if(duplicator.nextBoolean()){
+            if (duplicator.nextBoolean()) {
                 server.saveGame(userData, sequence);
-
-
 
             }
         } catch (RemoteException e) {
@@ -290,7 +263,6 @@ public class Client {
         }
         return userData;
     }
-
 
     /**
      * Handles errors that occur during client-server communication.
@@ -304,20 +276,15 @@ public class Client {
         System.out.println("\nError: " + (e.getMessage()));
         try {
             userData.getGameState().setState(Constants.IDLE_STATE);
+
             server.saveGame(userData, sequence);
-
-            if(duplicator.nextBoolean()){
+            if (duplicator.nextBoolean()) {
                 server.saveGame(userData, sequence);
-
-
-
             }
         } catch (IOException saveError) {
             if (!e.getMessage().equals(Constants.COULD_NOT_SAVE))
                 System.out.println(Constants.COULD_NOT_SAVE);
         }
     }
-
-
 
 }

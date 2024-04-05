@@ -5,23 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ee619b5d-b376-4e14-bab2-2bd4e233076e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Client.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GameServer/ServerFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GameServer/ServerFactoryImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/COMP-4635-Assignment-2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/COMP-4635-Assignment-2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Communication_Protocol_Design (3).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Communication_Protocol_Design_3 (1).docx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseServer/DatabaseImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GameServer/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GameServer/ServerFactoryImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerFactoryImp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GameServer/ServerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GameServer/ServerInterfaceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserData/test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserAccountServer/GameState.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserAccountServer/GameState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Awd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Client.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Jason.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/Rap.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/blue.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/br.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/brad.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/f.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserData/red.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,27 +34,17 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
-}</component>
   <component name="ProjectId" id="2eeQuyRsBogY39rAKO6kCsaNi26" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Client.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DatabaseServer.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.UserAccountServer.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
   <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.Client" />
@@ -105,6 +98,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Client" />
       <item itemvalue="Application.DatabaseServer" />
@@ -128,7 +132,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1712262793969</updated>
+      <workItem from="1712276223353" duration="1163000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

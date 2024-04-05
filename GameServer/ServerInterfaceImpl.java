@@ -36,9 +36,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public ServerInterfaceImpl(int seq) throws RemoteException {
         super();
-
-        sequence=seq;
-
+        sequence = seq;
 
         try {
             connectToDatabase();
@@ -79,24 +77,23 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public int checkValidUser(String username, int seq) throws RemoteException {
 
-        if(!idempotancyMap.containsKey(seq)){
-        try {
-            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
-            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
-            int loginResult = userAccountService.login(username.trim());
+        if (!idempotancyMap.containsKey(seq)) {
+            try {
+                Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
+                UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+                int loginResult = userAccountService.login(username.trim());
 
-            if (loginResult == 0) {
-                throw new RemoteException(Constants.DUPLICATE_LOGIN);
-            } else
-                idempotancyMap.put(seq, loginResult);
+                if (loginResult == 0) {
+                    throw new RemoteException(Constants.DUPLICATE_LOGIN);
+                } else
+                    idempotancyMap.put(seq, loginResult);
                 return loginResult;
+            } catch (Exception e) {
+                throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
+            }
+        }
 
-
-        } catch (Exception e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
-        }}
-
-        else{
+        else {
 
             return (int) idempotancyMap.get(seq);
         }
@@ -111,20 +108,18 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public UserData validateUserData(String username, int seq) throws RemoteException {
 
-        if(!idempotancyMap.containsKey(seq)){
-        try {
-            Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
-            UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
-            String userDataString = userAccountService.load(username);
-            UserData userData=new UserData(userDataString);
-            idempotancyMap.put(seq, userData);
-            return userData;
-
-
-        } catch (Exception e) {
-            throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
-        }}
-        else{
+        if (!idempotancyMap.containsKey(seq)) {
+            try {
+                Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
+                UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
+                String userDataString = userAccountService.load(username);
+                UserData userData = new UserData(userDataString);
+                idempotancyMap.put(seq, userData);
+                return userData;
+            } catch (Exception e) {
+                throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
+            }
+        } else {
             return (UserData) idempotancyMap.get(seq);
         }
 
@@ -161,7 +156,6 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public void logoutUser(String username, int seq) throws RemoteException {
 
-
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", Constants.UAS_PORT);
             UserAccountService userAccountService = (UserAccountService) registry.lookup("UserAccountService");
@@ -174,16 +168,19 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
             throw new RemoteException(Constants.CANT_COMMUNICATE_UAS, e);
         }
 
-
     }
 
     /**
-     * Validates the heartbeat signal for the specified user with the User Account Server (UAS).
-     * This method sends a heartbeat signal to the UAS for the specified user to indicate
+     * Validates the heartbeat signal for the specified user with the User Account
+     * Server (UAS).
+     * This method sends a heartbeat signal to the UAS for the specified user to
+     * indicate
      * the continued activity of the user.
      *
-     * @param username The username of the user for whom the heartbeat signal is validated.
-     * @throws RemoteException If an error occurs during remote communication with the UAS.
+     * @param username The username of the user for whom the heartbeat signal is
+     *                 validated.
+     * @throws RemoteException If an error occurs during remote communication with
+     *                         the UAS.
      */
     public void validateHeartbeat(String username) throws RemoteException {
         try {
@@ -210,19 +207,20 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
     public UserData processUserInput(UserData userData, String input, int seq)
             throws RemoteException {
 
-        if(!idempotancyMap.containsKey(seq)){
-        String[] tokenizedInput = input.split(";");
-        if (tokenizedInput.length <= 1)
-            throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
+        if (!idempotancyMap.containsKey(seq)) {
+            String[] tokenizedInput = input.split(";");
+            if (tokenizedInput.length <= 1)
+                throw new RemoteException(Constants.INVALID_COMMAND_SYNTAX);
 
-        String command = tokenizedInput[0];
-        String argument = tokenizedInput[1];
+            String command = tokenizedInput[0];
+            String argument = tokenizedInput[1];
 
-        processCommand(userData, command, argument);
-        saveGame(userData, sequence);
-        return userData;}
-
-        else return (UserData) idempotancyMap.get(seq);
+            processCommand(userData, command, argument);
+            saveGame(userData, sequence);
+            return userData;
+        }
+        else
+            return (UserData) idempotancyMap.get(seq);
     }
 
     /**
@@ -238,7 +236,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @param argument - The argument associated with the command.
      * @throws RemoteException - if there is an issue with remote communication.
      */
-    private  void processCommand(UserData userData, String command, String argument)
+    private void processCommand(UserData userData, String command, String argument)
             throws RemoteException {
         switch (command) {
             // Add word to database
@@ -353,7 +351,7 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException - if there is an issue with remote communication or
      *                         saving the game data.
      */
-    private  void createNewGame(UserData userData, int wordCount)
+    private void createNewGame(UserData userData, int wordCount)
             throws RemoteException {
         String words[] = generateWordList(wordCount);
 
@@ -525,10 +523,11 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
                 }
             }
 
-            return "\nThe word: " + input + " is not in the database.";}
+            return "\nThe word: " + input + " is not in the database.";
+        }
 
         return (String) idempotancyMap.get(seq);
-        }
+    }
 
     /**
      * Processes a user's guess for the puzzle.
@@ -542,38 +541,38 @@ public class ServerInterfaceImpl extends UnicastRemoteObject implements ServerIn
      */
     public ActiveGameData processPuzzleGuess(UserData userData, String input, int seq) throws RemoteException {
 
-        if(!idempotancyMap.containsKey(seq)){
-        String message = "";
-        GameState gameState = userData.getGameState();
-        gameState.appendNewGuess(input);
+        if (!idempotancyMap.containsKey(seq)) {
+            String message = "";
+            GameState gameState = userData.getGameState();
+            gameState.appendNewGuess(input);
 
-        boolean successfulGuess = gameState.getPuzzle().updatePuzzleGrid(input);
-        gameState.decrementAttempts();
-        if (successfulGuess) {
-            message = "\n*Successful guess: '" + input + "'. Puzzle updated.";
-        } else {
-            message = "\n*Unsuccessful guess: '" + input + "'.";
+            boolean successfulGuess = gameState.getPuzzle().updatePuzzleGrid(input);
+            gameState.decrementAttempts();
+            if (successfulGuess) {
+                message = "\n*Successful guess: '" + input + "'. Puzzle updated.";
+            } else {
+                message = "\n*Unsuccessful guess: '" + input + "'.";
+            }
+
+            // Check victory condition
+            if (gameState.getPuzzle().checkPuzzleSolved()) {
+                gameState.setState(Constants.IDLE_STATE);
+                message += "\nYou win!";
+                userData.incrementScore();
+                sequence++;
+                return new ActiveGameData(userData, false, message);
+
+            }
+
+            // Check defeat condition
+            if (gameState.getAttempts() == 0) {
+                gameState.setState(Constants.IDLE_STATE);
+                message += "\nYou lose!";
+                sequence++;
+                return new ActiveGameData(userData, false, message);
+            }
+            return new ActiveGameData(userData, true, message);
         }
-
-        // Check victory condition
-        if (gameState.getPuzzle().checkPuzzleSolved()) {
-            gameState.setState(Constants.IDLE_STATE);
-            message += "\nYou win!";
-            userData.incrementScore();
-            sequence++;
-            return new ActiveGameData(userData, false, message);
-
-        }
-
-        // Check defeat condition
-        if (gameState.getAttempts() == 0) {
-            gameState.setState(Constants.IDLE_STATE);
-            message += "\nYou lose!";
-            sequence++;
-            return new ActiveGameData(userData, false, message);
-        }
-        return new ActiveGameData(userData, true, message);
-    }
         return (ActiveGameData) idempotancyMap.get(seq);
     }
 }
